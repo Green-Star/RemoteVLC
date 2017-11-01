@@ -19,6 +19,7 @@ function pong (req, res, next) {
 
 function todo (req, res, next) {
   console.log('Not yet implemented')
+  return res.send('Not yet implemented').status(200).end()
 }
 
 module.exports = apiRouter
