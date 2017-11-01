@@ -1,0 +1,15 @@
+{
+  "name": "RemoteVLC",
+  "description": "A simple web interface to control VLC on a remote device",
+  "version": "0.0.1",
+  "private": true,
+  "licence": "GPLv3",
+  "engines": {
+    "node": ">=4.x"
+  },
+  "dependencies": {
+    "express": "^4.15.4",
+    "http": "0.0.0",
+    "morgan": "^1.8.2"
+  }
+}
