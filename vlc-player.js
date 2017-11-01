@@ -2,6 +2,17 @@ const child_process = require('child_process')
 
 const player = {}
 
+const METHODS = {
+  PAUSE: 'pause',
+  PLAY: 'play',
+  GET_TIME: 'getTime',
+  SET_TIME: 'setTime',
+  GET_VOLUME: 'getVolume',
+  SET_VOLUME: 'setVolume',
+  VOLUME_UP: 'volumeUp',
+  VOLUME_DOWN: 'volumeDown',
+}
+
 player.tasks = []
 player.methods = []
 player.vlcProcess = {}
@@ -43,7 +54,7 @@ player.start = function (playerName, filename) {
 }
 
 player.pause = function () {
-  player.tasks.push('pause')
+  player.tasks.push(METHODS.PAUSE)
   player.vlcProcess.stdin.write('pause\r\n')
 }
 
@@ -78,35 +89,35 @@ player.mute = function () {
   player.setVolume(0)
 }
 
-player.methods['pause'] = function (data) {
+player.methods[METHODS.PAUSE] = function (data) {
 
 }
 
-player.methods['play'] = function (data) {
+player.methods[METHODS.PLAY] = function (data) {
 
 }
 
-player.methods['getTime'] = function (data) {
+player.methods[METHODS.GET_TIME] = function (data) {
 
 }
 
-player.methods['setTime'] = function (data) {
+player.methods[METHODS.SET_TIME] = function (data) {
 
 }
 
-player.methods['getVolume'] = function (data) {
+player.methods[METHODS.GET_VOLUME] = function (data) {
 
 }
 
-player.methods['setVolume'] = function (data) {
+player.methods[METHODS.SET_VOLUME] = function (data) {
 
 }
 
-player.methods['volumeUp'] = function (data) {
+player.methods[METHODS.VOLUME_UP] = function (data) {
 
 }
 
-player.methods['volumeDown'] = function (data) {
+player.methods[METHODS.VOLUME_DOWN] = function (data) {
 
 }
 
