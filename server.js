@@ -8,7 +8,7 @@ console.log('Starting Remote control for ' + process.argv[2])
 console.log('Spawning VLC ...')
 
 const player = require('./vlc-player')
-player.start('vlc')
+player.start('vlc', process.argv[2])
 
 /*** Start WebUI control ***/
 console.log('Spawning web UI')
