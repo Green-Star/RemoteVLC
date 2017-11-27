@@ -23,16 +23,15 @@ player.context = {}
 
 function sanitizeServerFeedback (bufferData) {
   /* Sanitize server feedback */
-  /* (remove every trailing '> ') */
-  return bufferData.replace(new RegExp(/^> /, 'm'), '')
+  /* (remove every '> ') */
+  return bufferData.replace(new RegExp(/> /, 'g'), '')
 }
 
 function handleServerFeedback (tasks, data) {
   console.log('=== Start handleServerFeedback ===')
 
   let buffer = ''
-  /* I think we need to bufferize the data */
-  /* And consume it whenever needed */
+  /* Bufferize the data and consume it whenever needed */
   for (let c of data) {
     buffer += String.fromCharCode(c)
   }
