@@ -24,9 +24,7 @@ player.context = {}
 function sanitizeServerFeedback (bufferData) {
   /* Sanitize server feedback */
   /* (remove every trailing '> ') */
-  let replacedData = bufferData.replace(new RegExp(/^> /, 'm'), '')
-
-  return replacedData
+  return bufferData.replace(new RegExp(/^> /, 'm'), '')
 }
 
 function handleServerFeedback (tasks, data) {
