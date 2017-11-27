@@ -3,10 +3,12 @@ const child_process = require('child_process')
 const player = {}
 
 const METHODS = {
+  INIT: 'init',
   PAUSE: 'pause',
   PLAY: 'play',
   GET_TIME: 'getTime',
   SET_TIME: 'setTime',
+  GET_LENGTH: 'getLength',
   GET_VOLUME: 'getVolume',
   SET_VOLUME: 'setVolume',
   VOLUME_UP: 'volumeUp',
@@ -14,19 +16,65 @@ const METHODS = {
 }
 
 player.tasks = []
+player.data = ''
 player.methods = []
 player.vlcProcess = {}
+player.context = {}
 
-function handleServerFeedback(tasks, data) {
-  console.log('handleServerFeedback')
-  console.log('Tasks: ' + JSON.stringify(tasks))
-  console.log('Data: ' + JSON.stringify(data))
+function sanitizeServerFeedback (bufferData) {
+  /* Sanitize server feedback */
+  /* (remove every trailing '> ') */
+  let replacedData = bufferData.replace(new RegExp(/^> /, 'm'), '')
 
-  let task
-  
-  while ((task = tasks.shift()) !== undefined) {
-    player.methods[task](data)
+  return replacedData
+}
+
+function handleServerFeedback (tasks, data) {
+  console.log('=== Start handleServerFeedback ===')
+
+  let buffer = ''
+  /* I think we need to bufferize the data */
+  /* And consume it whenever needed */
+  for (let c of data) {
+    buffer += String.fromCharCode(c)
   }
+
+  console.log('Original data: [' + buffer + ']')
+  let sanitizedData = sanitizeServerFeedback(buffer)
+  console.log('Sanitized data: ['+ sanitizedData + ']')
+  player.data += sanitizedData
+  
+  console.log('Tasks to do: ' + JSON.stringify(player.tasks))
+  console.log('Data: ' + JSON.stringify(player.data))
+
+  for (let task of tasks) {
+    console.log('Execute: ' + task)
+
+    let end = player.methods[task](player.data)
+    if (end.result === false) break;
+
+    /* If the function succeeded we can remove it from the pending tasks */
+    player.tasks.shift()
+    /* And it has consume the relevant data, so we remove them too */
+    player.data = end.data
+  }
+
+  console.log('Pending tasks: ' + JSON.stringify(player.tasks))
+  console.log('Pending data: ' + JSON.stringify(player.data))
+  console.log('===  End  handleServerFeedback ===')
+}
+
+function initContext () {
+  player.context.title = ''
+  player.context.isPlaying = true
+  player.context.volume = 0
+  player.context.time = 0
+  player.context.length = 0
+
+  player.context.tracks = {}
+  player.context.tracks.video = []
+  player.context.tracks.audio = []
+  player.context.tracks.subtitle = []
 }
 
 function startVLC (filename) {
@@ -36,19 +84,22 @@ function startVLC (filename) {
   
   /* Record player's stdout callback function */
   player.vlcProcess.stdout.on('data', (data) => handleServerFeedback(player.tasks, data))
+
+  player.tasks.push(METHODS.INIT)
   
   /* Start media in pause mode */
   player.pause()
   
   /* Get media informations */
-  getMediaInformations()
+  setTimeout(getMediaInformations, 1000)
 }
 
 function getMediaInformations () {
-
+  player.getLength()
 }
 
 player.start = function (playerName, filename) {
+  initContext()
   startVLC(filename)
   console.log('TODO : Start player')
 }
@@ -70,6 +121,11 @@ player.setTime = function (time) {
 
 }
 
+player.getLength = function () {
+  player.tasks.push(METHODS.GET_LENGTH)
+  player.vlcProcess.stdin.write('get_length\r\n')
+}
+
 player.getVolume = function () {
 
 }
@@ -89,8 +145,28 @@ player.mute = function () {
   player.setVolume(0)
 }
 
-player.methods[METHODS.PAUSE] = function (data) {
 
+player.methods[METHODS.INIT] = function (data) {
+  let safeguard = "Command Line Interface initialized. Type `help' for help.\r\n"
+
+  let returnedResult = false
+  let returnedData = data
+
+  let pos = data.indexOf(safeguard)
+  if (pos > -1) {
+    returnedResult = true
+    returnedData = data.substr(pos + safeguard.length)
+  }
+
+  return { result: returnedResult, data: returnedData }
+}
+
+player.methods[METHODS.PAUSE] = function (data) {
+  let returnedData = data
+
+  player.context.isPlaying = !player.context.isPlaying
+
+  return { result: true, data: returnedData }
 }
 
 player.methods[METHODS.PLAY] = function (data) {
@@ -103,6 +179,26 @@ player.methods[METHODS.GET_TIME] = function (data) {
 
 player.methods[METHODS.SET_TIME] = function (data) {
 
+}
+
+player.methods[METHODS.GET_LENGTH] = function (data) {
+  let safeguard = "\r\n"
+
+  let returnedResult = false
+  let returnedData = data
+
+  let pos = data.indexOf(safeguard)
+  if (pos > -1) {
+    let length = data.substr(0, pos)
+    player.context.length = +length
+
+    returnedResult = true
+    returnedData = data.substr(pos + safeguard.length)
+
+    console.log('Media length: ' + player.context.length)
+  }
+
+  return {result: returnedResult, data: returnedData}
 }
 
 player.methods[METHODS.GET_VOLUME] = function (data) {
