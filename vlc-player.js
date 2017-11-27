@@ -27,7 +27,7 @@ function sanitizeServerFeedback (bufferData) {
   return bufferData.replace(new RegExp(/> /, 'g'), '')
 }
 
-function handleServerFeedback (tasks, data) {
+function handleServerFeedback (tasksToDo, data) {
   console.log('=== Start handleServerFeedback ===')
 
   let buffer = ''
@@ -40,21 +40,26 @@ function handleServerFeedback (tasks, data) {
   let sanitizedData = sanitizeServerFeedback(buffer)
   console.log('Sanitized data: ['+ sanitizedData + ']')
   player.data += sanitizedData
-  
-  console.log('Tasks to do: ' + JSON.stringify(player.tasks))
-  console.log('Data: ' + JSON.stringify(player.data))
 
-  for (let task of tasks) {
+  let pendingTasks = tasksToDo.slice()
+  let pendingData = player.data
+  console.log('Tasks to do: ' + JSON.stringify(pendingTasks))
+  console.log('Data: ' + JSON.stringify(pendingData))
+
+  for (let task of tasksToDo) {
     console.log('Execute: ' + task)
 
-    let end = player.methods[task](player.data)
-    if (end.result === false) break;
+    let end = player.methods[task](pendingData)
+    if (end.result === false) break
 
     /* If the function succeeded we can remove it from the pending tasks */
-    player.tasks.shift()
+    pendingTasks.shift()
     /* And it has consume the relevant data, so we remove them too */
-    player.data = end.data
+    pendingData = end.data
   }
+
+  player.tasks = pendingTasks
+  player.data = pendingData
 
   console.log('Pending tasks: ' + JSON.stringify(player.tasks))
   console.log('Pending data: ' + JSON.stringify(player.data))
@@ -111,7 +116,6 @@ player.play = function () {
 }
 
 player.getTime = function () {
-
 }
 
 player.setTime = function (time) {
@@ -171,7 +175,6 @@ player.methods[METHODS.PLAY] = function (data) {
 }
 
 player.methods[METHODS.GET_TIME] = function (data) {
-
 }
 
 player.methods[METHODS.SET_TIME] = function (data) {
