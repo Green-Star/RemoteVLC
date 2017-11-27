@@ -98,6 +98,7 @@ function startVLC (filename) {
 
 function getMediaInformations () {
   player.getLength()
+  player.getTime()
 }
 
 player.start = function (playerName, filename) {
@@ -116,6 +117,8 @@ player.play = function () {
 }
 
 player.getTime = function () {
+  player.tasks.push(METHODS.GET_TIME)
+  player.vlcProcess.stdin.write('get_time\r\n')
 }
 
 player.setTime = function (time) {
@@ -175,6 +178,23 @@ player.methods[METHODS.PLAY] = function (data) {
 }
 
 player.methods[METHODS.GET_TIME] = function (data) {
+  let safeguard = "\r\n"
+
+  let returnedResult = false
+  let returnedData = data
+
+  let pos = data.indexOf(safeguard)
+  if (pos > -1) {
+    let time = data.substr(0, pos)
+    player.context.time = +time
+
+    returnedResult = true
+    returnedData = data.substr(pos + safeguard.length)
+
+    console.log('Current time: ' + player.context.time)
+  }
+
+  return {result: returnedResult, data: returnedData}
 }
 
 player.methods[METHODS.SET_TIME] = function (data) {
