@@ -138,7 +138,8 @@ player.setVolume = function (volume) {
 }
 
 player.volumeUp = function () {
-
+  player.tasks.push(METHODS.VOLUME_UP)
+  player.vlcProcess.stdin.write('volup\r\n')
 }
 
 player.volumeDown = function () {
@@ -230,7 +231,22 @@ player.methods[METHODS.SET_VOLUME] = function (data) {
 }
 
 player.methods[METHODS.VOLUME_UP] = function (data) {
+  let returnedResult = false
+  let returnedData = data
 
+  let regexp = new RegExp(/^\( audio volume: (\d+) \)\r\n/)
+  let matching = data.match(regexp)
+
+  if (matching && matching[0] && matching[1]) {
+    player.context.volume = +matching[1]
+
+    returnedResult = true
+    returnedData = data.substr(matching[0].length)
+
+    console.log('Volume: ' + player.context.volume)
+  }
+
+  return {result: returnedResult, data: returnedData}
 }
 
 player.methods[METHODS.VOLUME_DOWN] = function (data) {
