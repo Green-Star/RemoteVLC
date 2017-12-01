@@ -11,8 +11,7 @@ const METHODS = {
   GET_LENGTH: 'getLength',
   GET_VOLUME: 'getVolume',
   SET_VOLUME: 'setVolume',
-  VOLUME_UP: 'volumeUp',
-  VOLUME_DOWN: 'volumeDown',
+  MODIFY_VOLUME: 'modifyVolume'
 }
 
 player.tasks = []
@@ -138,12 +137,13 @@ player.setVolume = function (volume) {
 }
 
 player.volumeUp = function () {
-  player.tasks.push(METHODS.VOLUME_UP)
+  player.tasks.push(METHODS.MODIFY_VOLUME)
   player.vlcProcess.stdin.write('volup\r\n')
 }
 
 player.volumeDown = function () {
-
+  player.tasks.push(METHODS.MODIFY_VOLUME)
+  player.vlcProcess.stdin.write('voldown\r\n')
 }
 
 player.mute = function () {
@@ -230,7 +230,7 @@ player.methods[METHODS.SET_VOLUME] = function (data) {
 
 }
 
-player.methods[METHODS.VOLUME_UP] = function (data) {
+player.methods[METHODS.MODIFY_VOLUME] = function (data) {
   let returnedResult = false
   let returnedData = data
 
@@ -247,10 +247,6 @@ player.methods[METHODS.VOLUME_UP] = function (data) {
   }
 
   return {result: returnedResult, data: returnedData}
-}
-
-player.methods[METHODS.VOLUME_DOWN] = function (data) {
-
 }
 
 /*
