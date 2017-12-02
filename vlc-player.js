@@ -98,6 +98,7 @@ function startVLC (filename) {
 function getMediaInformations () {
   player.getLength()
   player.getTime()
+  player.getVolume()
 }
 
 player.start = function (playerName, filename) {
@@ -130,10 +131,14 @@ player.getLength = function () {
 }
 
 player.getVolume = function () {
-
+  player.tasks.push(METHODS.GET_VOLUME)
+  player.vlcProcess.stdin.write('volume\r\n')
 }
 
 player.setVolume = function (volume) {
+  player.tasks.push(METHODS.SET_VOLUME)
+  player.vlcProcess.stdin.write('volume ' + volume + '\r\n')
+  player.context.volume = volume
 }
 
 player.volumeUp = function () {
@@ -223,11 +228,28 @@ player.methods[METHODS.GET_LENGTH] = function (data) {
 }
 
 player.methods[METHODS.GET_VOLUME] = function (data) {
+  let safeguard = "\r\n"
 
+  let returnedResult = false
+  let returnedData = data
+
+  let pos = data.indexOf(safeguard)
+  if (pos > -1) {
+    let volume = data.substr(0, pos)
+    player.context.volume = +volume
+
+    returnedResult = true
+    returnedData = data.substr(pos + safeguard.length)
+
+    console.log('Volume: ' + player.context.volume)
+
+    return {result: returnedResult, data: returnedData}
+  }
 }
 
 player.methods[METHODS.SET_VOLUME] = function (data) {
-
+  console.log('Set Volume: ' + player.context.volume)
+  return {result: true, data: data}
 }
 
 player.methods[METHODS.MODIFY_VOLUME] = function (data) {
