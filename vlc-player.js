@@ -8,6 +8,7 @@ const METHODS = {
   PLAY: 'play',
   GET_TIME: 'getTime',
   SET_TIME: 'setTime',
+  GET_TITLE: 'getTitle',
   GET_LENGTH: 'getLength',
   GET_VOLUME: 'getVolume',
   SET_VOLUME: 'setVolume',
@@ -96,6 +97,7 @@ function startVLC (filename) {
 }
 
 function getMediaInformations () {
+  player.getTitle()
   player.getLength()
   player.getTime()
   player.getVolume()
@@ -123,6 +125,11 @@ player.getTime = function () {
 
 player.setTime = function (time) {
 
+}
+
+player.getTitle = function () {
+  player.tasks.push(METHODS.GET_TITLE)
+  player.vlcProcess.stdin.write('get_title\r\n')
 }
 
 player.getLength = function () {
@@ -181,6 +188,25 @@ player.methods[METHODS.PAUSE] = function (data) {
 
 player.methods[METHODS.PLAY] = function (data) {
 
+}
+
+player.methods[METHODS.GET_TITLE] = function (data) {
+  let safeguard = "\r\n"
+
+  let returnedResult = false
+  let returndData = data
+
+  let pos = data.indexOf(safeguard)
+  if (pos > -1) {
+    player.context.title = data.substr(0, pos)
+
+    returnedResult = true
+    returnedData = data.substr(pos + safeguard.length)
+
+    console.log('Title: ' + player.context.title)
+  }
+
+  return {result: returnedResult, data: returnedData}
 }
 
 player.methods[METHODS.GET_TIME] = function (data) {
