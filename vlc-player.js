@@ -124,7 +124,9 @@ player.getTime = function () {
 }
 
 player.setTime = function (time) {
-
+  player.tasks.push(METHODS.SET_TIME)
+  player.vlcProcess.stdin.write('seek ' + time + '\r\n')
+  player.context.time = time
 }
 
 player.getTitle = function () {
@@ -230,7 +232,8 @@ player.methods[METHODS.GET_TIME] = function (data) {
 }
 
 player.methods[METHODS.SET_TIME] = function (data) {
-
+  console.log('Time: ' + player.context.time)
+  return {result: true, data: data}
 }
 
 player.methods[METHODS.GET_LENGTH] = function (data) {
