@@ -12,7 +12,9 @@ const METHODS = {
   GET_LENGTH: 'getLength',
   GET_VOLUME: 'getVolume',
   SET_VOLUME: 'setVolume',
-  MODIFY_VOLUME: 'modifyVolume'
+  MODIFY_VOLUME: 'modifyVolume',
+
+  GET_SUBTITLE_TRACKS: 'getSubtitleTracks'
 }
 
 player.tasks = []
@@ -79,6 +81,34 @@ function initContext () {
   player.context.tracks.subtitle = []
 }
 
+function parseTracks (data) {
+  let parsedTracks = []
+  let result = false
+  let remainingData = data
+
+  let regexp = new RegExp(/^\+-{4}\[ (?:spu|audio|video)-es \]\r\n((?:.*|\r\n)+)\+-{4}\[ end of (?:spu|audio|video)-es \]\r\n/)
+  let matchedData = data.match(regexp)
+
+  result = true
+  remainingData = data.substr(matchedData[0].length)
+
+  let subRegex = new RegExp(/\|\s(-?\d+)\s-(?:\s(.*)\s-)?\s(?:\[(.+)\]|(\S+))(?:\s(\*?))?\r\n/, 'g')
+  let tracks
+  while (tracks = subRegex.exec(matchedData[1])) {
+    let trackInfo = {}
+    trackInfo.id = tracks[1]
+    trackInfo.title = tracks[2]
+    trackInfo.language = (tracks[3]) ? tracks[3] : tracks[4]
+    trackInfo.selected = (tracks[5]) ? true : false
+
+    console.log(trackInfo)
+
+    parsedTracks.push(trackInfo)
+  }
+
+  return {result: result, remainingData: remainingData, tracks: parsedTracks}
+}
+
 function startVLC (filename) {
   /* Spawn VLC process */
   player.vlcProcess = child_process.spawn('vlc',
@@ -101,6 +131,7 @@ function getMediaInformations () {
   player.getLength()
   player.getTime()
   player.getVolume()
+  player.getSubtitleTracks()
 }
 
 player.start = function (playerName, filename) {
@@ -163,6 +194,12 @@ player.volumeDown = function () {
 player.mute = function () {
   player.setVolume(0)
 }
+
+player.getSubtitleTracks = function () {
+  player.tasks.push(METHODS.GET_SUBTITLE_TRACKS)
+  player.vlcProcess.stdin.write('strack\r\n')
+}
+
 
 
 player.methods[METHODS.INIT] = function (data) {
@@ -298,6 +335,16 @@ player.methods[METHODS.MODIFY_VOLUME] = function (data) {
   }
 
   return {result: returnedResult, data: returnedData}
+}
+
+player.methods[METHODS.GET_SUBTITLE_TRACKS] = function (data) {
+  let result = parseTracks(data)
+
+  player.context.tracks.subtitle = result.tracks
+
+  console.log('Subtitles tracks: ' + JSON.stringify(player.context.tracks.subtitle))
+
+  return {result: result.returnedResult, data: result.remainingData}
 }
 
 /*
