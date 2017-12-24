@@ -35,7 +35,7 @@ function handleServerFeedback (tasksToDo, data) {
   let buffer = ''
   /* Bufferize the data and consume it whenever needed */
   for (let c of data) {
-    buffer += String.fromCharCode(c)
+    buffer += c
   }
 
   console.log('Original data: [' + buffer + ']')
@@ -115,6 +115,7 @@ function startVLC (filename) {
 			      [ filename, '--fullscreen', '--play-and-exit', '-I rc' ])
   
   /* Record player's stdout callback function */
+  player.vlcProcess.stdout.setEncoding('utf8')
   player.vlcProcess.stdout.on('data', (data) => handleServerFeedback(player.tasks, data))
 
   player.tasks.push(METHODS.INIT)
