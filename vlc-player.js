@@ -13,7 +13,7 @@ const METHODS = {
   GET_VOLUME: 'getVolume',
   SET_VOLUME: 'setVolume',
   MODIFY_VOLUME: 'modifyVolume',
-
+  GET_AUDIO_TRACKS: 'getAudioTracks',
   GET_SUBTITLE_TRACKS: 'getSubtitleTracks'
 }
 
@@ -86,15 +86,22 @@ function parseTracks (data) {
   let result = false
   let remainingData = data
 
-  let regexp = new RegExp(/^\+-{4}\[ (?:spu|audio|video)-es \]\r\n((?:.*|\r\n)+)\+-{4}\[ end of (?:spu|audio|video)-es \]\r\n/)
+  let regexp = new RegExp(/(\+-{4}\[ (spu|audio|video)-es \]\r\n)/)
   let matchedData = data.match(regexp)
 
-  result = true
-  remainingData = data.substr(matchedData[0].length)
+  if (!matchedData[1] || !matchedData[2]) return {result: false, remainingData: data, tracks: parsedTracks}
 
-  let subRegex = new RegExp(/\|\s(-?\d+)\s-(?:\s(.*)\s-)?\s(?:\[(.+)\]|(\S+))(?:\s(\*?))?\r\n/, 'g')
+  let safeguard = '+----[ end of ' + matchedData[2] + '-es ]\r\n'
+  let pos = data.indexOf(safeguard)
+  if (pos === -1) return {resutl: false, remainingData: data, tracks: parsedTracks}
+
+  let tracksData = data.substr(matchedData[1].length, pos - matchedData[1].length)
+  remainingData = data.substr(pos + safeguard.length)
+  result = true
+
+  let subRegex = new RegExp(/\|\s(-?\d+)\s-(?:\s(.*)\s-)?\s(?:\[(.+)\]|([^*\r\n]+))(?:\s(\*?))?\r\n/, 'g')
   let tracks
-  while (tracks = subRegex.exec(matchedData[1])) {
+  while (tracks = subRegex.exec(tracksData)) {
     let trackInfo = {}
     trackInfo.id = tracks[1]
     trackInfo.title = tracks[2]
@@ -132,6 +139,7 @@ function getMediaInformations () {
   player.getLength()
   player.getTime()
   player.getVolume()
+  player.getAudioTracks()
   player.getSubtitleTracks()
 }
 
@@ -194,6 +202,11 @@ player.volumeDown = function () {
 
 player.mute = function () {
   player.setVolume(0)
+}
+
+player.getAudioTracks = function () {
+  player.tasks.push(METHODS.GET_AUDIO_TRACKS)
+  player.vlcProcess.stdin.write('atrack\r\n')
 }
 
 player.getSubtitleTracks = function () {
@@ -336,6 +349,16 @@ player.methods[METHODS.MODIFY_VOLUME] = function (data) {
   }
 
   return {result: returnedResult, data: returnedData}
+}
+
+player.methods[METHODS.GET_AUDIO_TRACKS] = function (data) {
+  let result = parseTracks(data)
+
+  player.context.tracks.audio = result.tracks
+
+  console.log('Audio tracks: ' + JSON.stringify(player.context.tracks.audio))
+
+  return {result: result.returnedResult, data: result.remainingData}
 }
 
 player.methods[METHODS.GET_SUBTITLE_TRACKS] = function (data) {
