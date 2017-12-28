@@ -13,6 +13,7 @@ const METHODS = {
   GET_VOLUME: 'getVolume',
   SET_VOLUME: 'setVolume',
   MODIFY_VOLUME: 'modifyVolume',
+  GET_VIDEO_TRACKS: 'getVideoTracks',
   GET_AUDIO_TRACKS: 'getAudioTracks',
   GET_SUBTITLE_TRACKS: 'getSubtitleTracks'
 }
@@ -139,6 +140,7 @@ function getMediaInformations () {
   player.getLength()
   player.getTime()
   player.getVolume()
+  player.getVideoTracks()
   player.getAudioTracks()
   player.getSubtitleTracks()
 }
@@ -202,6 +204,11 @@ player.volumeDown = function () {
 
 player.mute = function () {
   player.setVolume(0)
+}
+
+player.getVideoTracks = function () {
+  player.tasks.push(METHODS.GET_VIDEO_TRACKS)
+  player.vlcProcess.stdin.write('vtrack\r\n')
 }
 
 player.getAudioTracks = function () {
@@ -349,6 +356,16 @@ player.methods[METHODS.MODIFY_VOLUME] = function (data) {
   }
 
   return {result: returnedResult, data: returnedData}
+}
+
+player.methods[METHODS.GET_VIDEO_TRACKS] = function (data) {
+  let result = parseTracks(data)
+
+  player.context.tracks.video = result.tracks
+
+  console.log('Video tracks: ' + JSON.stringify(player.context.tracks.video))
+
+  return {result: result.returnedResult, data: result.remainingData}
 }
 
 player.methods[METHODS.GET_AUDIO_TRACKS] = function (data) {
