@@ -114,7 +114,7 @@ function parseTracks (data) {
     parsedTracks.push(trackInfo)
   }
 
-  return {result: result, remainingData: remainingData, tracks: parsedTracks}
+  return { result: result, remainingData: remainingData, tracks: parsedTracks }
 }
 
 function startVLC (filename) {
@@ -266,7 +266,7 @@ player.methods[METHODS.GET_TITLE] = function (data) {
     console.log('Title: ' + player.context.title)
   }
 
-  return {result: returnedResult, data: returnedData}
+  return { result: returnedResult, data: returnedData }
 }
 
 player.methods[METHODS.GET_TIME] = function (data) {
@@ -286,12 +286,12 @@ player.methods[METHODS.GET_TIME] = function (data) {
     console.log('Current time: ' + player.context.time)
   }
 
-  return {result: returnedResult, data: returnedData}
+  return { result: returnedResult, data: returnedData }
 }
 
 player.methods[METHODS.SET_TIME] = function (data) {
   console.log('Time: ' + player.context.time)
-  return {result: true, data: data}
+  return { result: true, data: data }
 }
 
 player.methods[METHODS.GET_LENGTH] = function (data) {
@@ -311,7 +311,7 @@ player.methods[METHODS.GET_LENGTH] = function (data) {
     console.log('Media length: ' + player.context.length)
   }
 
-  return {result: returnedResult, data: returnedData}
+  return { result: returnedResult, data: returnedData }
 }
 
 player.methods[METHODS.GET_VOLUME] = function (data) {
@@ -330,13 +330,13 @@ player.methods[METHODS.GET_VOLUME] = function (data) {
 
     console.log('Volume: ' + player.context.volume)
 
-    return {result: returnedResult, data: returnedData}
+    return { result: returnedResult, data: returnedData }
   }
 }
 
 player.methods[METHODS.SET_VOLUME] = function (data) {
   console.log('Set Volume: ' + player.context.volume)
-  return {result: true, data: data}
+  return { result: true, data: data }
 }
 
 player.methods[METHODS.MODIFY_VOLUME] = function (data) {
@@ -355,7 +355,7 @@ player.methods[METHODS.MODIFY_VOLUME] = function (data) {
     console.log('Volume: ' + player.context.volume)
   }
 
-  return {result: returnedResult, data: returnedData}
+  return { result: returnedResult, data: returnedData }
 }
 
 player.methods[METHODS.GET_VIDEO_TRACKS] = function (data) {
@@ -365,7 +365,7 @@ player.methods[METHODS.GET_VIDEO_TRACKS] = function (data) {
 
   console.log('Video tracks: ' + JSON.stringify(player.context.tracks.video))
 
-  return {result: result.returnedResult, data: result.remainingData}
+  return { result: result.returnedResult, data: result.remainingData }
 }
 
 player.methods[METHODS.GET_AUDIO_TRACKS] = function (data) {
@@ -375,7 +375,7 @@ player.methods[METHODS.GET_AUDIO_TRACKS] = function (data) {
 
   console.log('Audio tracks: ' + JSON.stringify(player.context.tracks.audio))
 
-  return {result: result.returnedResult, data: result.remainingData}
+  return { result: result.returnedResult, data: result.remainingData }
 }
 
 player.methods[METHODS.GET_SUBTITLE_TRACKS] = function (data) {
@@ -385,43 +385,7 @@ player.methods[METHODS.GET_SUBTITLE_TRACKS] = function (data) {
 
   console.log('Subtitles tracks: ' + JSON.stringify(player.context.tracks.subtitle))
 
-  return {result: result.returnedResult, data: result.remainingData}
+  return { result: result.returnedResult, data: result.remainingData }
 }
-
-/*
-setTimeout(() => vlc.stdin.write('get_title\r\n'), 5000)
-setTimeout(() => vlc.stdin.write('get_time\r\n'), 5000)
-setTimeout(() => vlc.stdin.write('get_length\r\n'), 5000)
-setTimeout(() => vlc.stdin.write('volume 150\r\n'), 5000)
-setTimeout(() => vlc.stdin.write('vtrack\r\n'), 5000)
-setTimeout(() => vlc.stdin.write('atrack\r\n'), 5000)
-setTimeout(() => vlc.stdin.write('strack\r\n'), 5000)
-
-
-
-
-function parse_data(data) {
-  let parsed_result = [ [] ]
-  let i = 0
-
-  for (let c of data) {
-    console.log(c+' : '+String.fromCharCode(c))
-
-    if (c === ">".charCodeAt(0)) {
-      i++
-      parsed_result[i] = []
-      continue
-    }
-    parsed_result[i].push(c)
-  }
-
-  for (let i of parsed_result) {
-    console.log('***')
-    i.map((c) => console.log(String.fromCharCode(c)))
-    console.log('***')
-  }
-}
-
-*/
 
 module.exports = player
