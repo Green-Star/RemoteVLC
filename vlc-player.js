@@ -5,7 +5,6 @@ const player = {}
 const METHODS = {
   INIT: 'init',
   PAUSE: 'pause',
-  PLAY: 'play',
   GET_TIME: 'getTime',
   SET_TIME: 'setTime',
   GET_TITLE: 'getTitle',
@@ -157,7 +156,7 @@ player.pause = function () {
 }
 
 player.play = function () {
-
+  player.pause()
 }
 
 player.getTime = function () {
@@ -244,10 +243,6 @@ player.methods[METHODS.PAUSE] = function (data) {
   player.context.isPlaying = !player.context.isPlaying
 
   return { result: true, data: returnedData }
-}
-
-player.methods[METHODS.PLAY] = function (data) {
-
 }
 
 player.methods[METHODS.GET_TITLE] = function (data) {
