@@ -14,6 +14,7 @@ const METHODS = {
   MODIFY_VOLUME: 'modifyVolume',
   SET_VIDEO_TRACK: 'setVideoTrack',
   GET_VIDEO_TRACKS: 'getVideoTracks',
+  SET_AUDIO_TRACK: 'setAudioTrack',
   GET_AUDIO_TRACKS: 'getAudioTracks',
   SET_SUBTITLE_TRACK: 'setSubtitleTrack',
   GET_SUBTITLE_TRACKS: 'getSubtitleTracks'
@@ -233,6 +234,15 @@ player.getVideoTracks = function () {
   player.vlcProcess.stdin.write('vtrack\r\n')
 }
 
+player.setAudioTrack = function (trackId) {
+  let newTrackIndex = checkNewTrackId(player.context.tracks.audio, trackId)
+  if (newTrackIndex === -1) return
+
+  player.tasks.push(METHODS.SET_AUDIO_TRACK)
+  player.vlcProcess.stdin.write('atrack ' + trackId + '\r\n')
+  updateTrack(player.context.tracks.audio, newTrackIndex)
+}
+
 player.getAudioTracks = function () {
   player.tasks.push(METHODS.GET_AUDIO_TRACKS)
   player.vlcProcess.stdin.write('atrack\r\n')
@@ -253,8 +263,11 @@ player.getSubtitleTracks = function () {
   player.vlcProcess.stdin.write('strack\r\n')
 }
 
+/*** --------------------------------------------------- ***
 
+                   INTERNAL METHODS
 
+*** --------------------------------------------------- ***/
 player.methods[METHODS.INIT] = function (data) {
   let safeguard = "Command Line Interface initialized. Type `help' for help.\r\n"
 
@@ -399,6 +412,11 @@ player.methods[METHODS.GET_VIDEO_TRACKS] = function (data) {
   console.log('Video tracks: ' + JSON.stringify(player.context.tracks.video))
 
   return { result: result.returnedResult, data: result.remainingData }
+}
+
+player.methods[METHODS.SET_AUDIO_TRACK] = function (data) {
+  console.log('Set Audio track: ' + JSON.stringify(player.context.tracks.audio))
+  return { result: true, data: data }
 }
 
 player.methods[METHODS.GET_AUDIO_TRACKS] = function (data) {
