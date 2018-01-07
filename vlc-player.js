@@ -14,6 +14,7 @@ const METHODS = {
   MODIFY_VOLUME: 'modifyVolume',
   GET_VIDEO_TRACKS: 'getVideoTracks',
   GET_AUDIO_TRACKS: 'getAudioTracks',
+  SET_SUBTITLE_TRACK: 'setSubtitleTrack',
   GET_SUBTITLE_TRACKS: 'getSubtitleTracks'
 }
 
@@ -116,6 +117,22 @@ function parseTracks (data) {
   return { result: result, remainingData: remainingData, tracks: parsedTracks }
 }
 
+function updateTrack (tracks, trackId) {
+  let newTrackIndex = tracks.findIndex(track => track.id === trackId)
+  if (newTrackIndex === -1) {
+    newTrackIndex = tracks.findIndex(track => track.id === -1)
+  }
+  if (newTrackIndex === -1) return
+
+  let oldTrackIndex = tracks.findIndex(track => track.selected === true)
+  if (oldTrackIndex === -1) return
+
+  tracks[oldTrackIndex].selected = false
+  tracks[newTrackIndex].selected = true
+
+  console.log("***** Inside the function : " + JSON.stringify(tracks))
+}
+
 function startVLC (filename) {
   /* Spawn VLC process */
   player.vlcProcess = child_process.spawn('vlc',
@@ -213,6 +230,12 @@ player.getVideoTracks = function () {
 player.getAudioTracks = function () {
   player.tasks.push(METHODS.GET_AUDIO_TRACKS)
   player.vlcProcess.stdin.write('atrack\r\n')
+}
+
+player.setSubtitleTrack = function (trackId) {
+  player.tasks.push(METHODS.SET_SUBTITLE_TRACK)
+  player.vlcProcess.stdin.write('strack ' + trackId + '\r\n')
+  updateTrack(player.context.tracks.subtitle, trackId)
 }
 
 player.getSubtitleTracks = function () {
@@ -371,6 +394,11 @@ player.methods[METHODS.GET_AUDIO_TRACKS] = function (data) {
   console.log('Audio tracks: ' + JSON.stringify(player.context.tracks.audio))
 
   return { result: result.returnedResult, data: result.remainingData }
+}
+
+player.methods[METHODS.SET_SUBTITLE_TRACK] = function (data) {
+  console.log('Set Subtitle track: ' + JSON.stringify(player.context.tracks.subtitle))
+  return { result: true, data: data }
 }
 
 player.methods[METHODS.GET_SUBTITLE_TRACKS] = function (data) {
