@@ -5,12 +5,12 @@ const player = {}
 const METHODS = {
   INIT: 'init',
   PAUSE: 'pause',
-  GET_TIME: 'getTime',
   SET_TIME: 'setTime',
+  GET_TIME: 'getTime',
   GET_TITLE: 'getTitle',
   GET_LENGTH: 'getLength',
-  GET_VOLUME: 'getVolume',
   SET_VOLUME: 'setVolume',
+  GET_VOLUME: 'getVolume',
   MODIFY_VOLUME: 'modifyVolume',
   SET_VIDEO_TRACK: 'setVideoTrack',
   GET_VIDEO_TRACKS: 'getVideoTracks',
@@ -174,15 +174,15 @@ player.play = function () {
   player.pause()
 }
 
-player.getTime = function () {
-  player.tasks.push(METHODS.GET_TIME)
-  player.vlcProcess.stdin.write('get_time\r\n')
-}
-
 player.setTime = function (time) {
   player.tasks.push(METHODS.SET_TIME)
   player.vlcProcess.stdin.write('seek ' + time + '\r\n')
   player.context.time = time
+}
+
+player.getTime = function () {
+  player.tasks.push(METHODS.GET_TIME)
+  player.vlcProcess.stdin.write('get_time\r\n')
 }
 
 player.getTitle = function () {
@@ -195,15 +195,15 @@ player.getLength = function () {
   player.vlcProcess.stdin.write('get_length\r\n')
 }
 
-player.getVolume = function () {
-  player.tasks.push(METHODS.GET_VOLUME)
-  player.vlcProcess.stdin.write('volume\r\n')
-}
-
 player.setVolume = function (volume) {
   player.tasks.push(METHODS.SET_VOLUME)
   player.vlcProcess.stdin.write('volume ' + volume + '\r\n')
   player.context.volume = volume
+}
+
+player.getVolume = function () {
+  player.tasks.push(METHODS.GET_VOLUME)
+  player.vlcProcess.stdin.write('volume\r\n')
 }
 
 player.volumeUp = function () {
@@ -310,6 +310,11 @@ player.methods[METHODS.GET_TITLE] = function (data) {
   return { result: returnedResult, data: returnedData }
 }
 
+player.methods[METHODS.SET_TIME] = function (data) {
+  console.log('Time: ' + player.context.time)
+  return { result: true, data: data }
+}
+
 player.methods[METHODS.GET_TIME] = function (data) {
   let safeguard = "\r\n"
 
@@ -328,11 +333,6 @@ player.methods[METHODS.GET_TIME] = function (data) {
   }
 
   return { result: returnedResult, data: returnedData }
-}
-
-player.methods[METHODS.SET_TIME] = function (data) {
-  console.log('Time: ' + player.context.time)
-  return { result: true, data: data }
 }
 
 player.methods[METHODS.GET_LENGTH] = function (data) {
@@ -355,6 +355,11 @@ player.methods[METHODS.GET_LENGTH] = function (data) {
   return { result: returnedResult, data: returnedData }
 }
 
+player.methods[METHODS.SET_VOLUME] = function (data) {
+  console.log('Set Volume: ' + player.context.volume)
+  return { result: true, data: data }
+}
+
 player.methods[METHODS.GET_VOLUME] = function (data) {
   let safeguard = "\r\n"
 
@@ -373,11 +378,6 @@ player.methods[METHODS.GET_VOLUME] = function (data) {
 
     return { result: returnedResult, data: returnedData }
   }
-}
-
-player.methods[METHODS.SET_VOLUME] = function (data) {
-  console.log('Set Volume: ' + player.context.volume)
-  return { result: true, data: data }
 }
 
 player.methods[METHODS.MODIFY_VOLUME] = function (data) {
