@@ -104,7 +104,7 @@ function parseTracks (data) {
   let tracks
   while (tracks = subRegex.exec(tracksData)) {
     let trackInfo = {}
-    trackInfo.id = tracks[1]
+    trackInfo.id = +tracks[1]
     trackInfo.title = tracks[2]
     trackInfo.language = (tracks[3]) ? tracks[3] : tracks[4]
     trackInfo.selected = (tracks[5]) ? true : false
