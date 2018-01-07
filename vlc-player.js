@@ -117,20 +117,16 @@ function parseTracks (data) {
   return { result: result, remainingData: remainingData, tracks: parsedTracks }
 }
 
-function updateTrack (tracks, trackId) {
-  let newTrackIndex = tracks.findIndex(track => track.id === trackId)
-  if (newTrackIndex === -1) {
-    newTrackIndex = tracks.findIndex(track => track.id === -1)
-  }
-  if (newTrackIndex === -1) return
+function checkNewTrackId (tracks, trackId) {
+  return tracks.findIndex(track => track.id === trackId)
+}
 
+function updateTrack (tracks, newTrackIndex) {
   let oldTrackIndex = tracks.findIndex(track => track.selected === true)
   if (oldTrackIndex === -1) return
 
   tracks[oldTrackIndex].selected = false
   tracks[newTrackIndex].selected = true
-
-  console.log("***** Inside the function : " + JSON.stringify(tracks))
 }
 
 function startVLC (filename) {
@@ -233,9 +229,13 @@ player.getAudioTracks = function () {
 }
 
 player.setSubtitleTrack = function (trackId) {
+  /* If the new trackId is not valid, stop here */
+  let newTrackIndex = checkNewTrackId(player.context.tracks.subtitle, trackId)
+  if (newTrackIndex === -1) return
+
   player.tasks.push(METHODS.SET_SUBTITLE_TRACK)
   player.vlcProcess.stdin.write('strack ' + trackId + '\r\n')
-  updateTrack(player.context.tracks.subtitle, trackId)
+  updateTrack(player.context.tracks.subtitle, newTrackIndex)
 }
 
 player.getSubtitleTracks = function () {
