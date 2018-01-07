@@ -12,6 +12,7 @@ const METHODS = {
   GET_VOLUME: 'getVolume',
   SET_VOLUME: 'setVolume',
   MODIFY_VOLUME: 'modifyVolume',
+  SET_VIDEO_TRACK: 'setVideoTrack',
   GET_VIDEO_TRACKS: 'getVideoTracks',
   GET_AUDIO_TRACKS: 'getAudioTracks',
   SET_SUBTITLE_TRACK: 'setSubtitleTrack',
@@ -218,6 +219,15 @@ player.mute = function () {
   player.setVolume(0)
 }
 
+player.setVideoTrack = function (trackId) {
+  let newTrackIndex = checkNewTrackId(player.context.tracks.video, trackId)
+  if (newTrackIndex === -1) return
+
+  player.tasks.push(METHODS.SET_VIDEO_TRACK)
+  player.vlcProcess.stdin.write('vtrack ' + trackId + '\r\n')
+  updateTrack(player.context.tracks.video, newTrackIndex)
+}
+
 player.getVideoTracks = function () {
   player.tasks.push(METHODS.GET_VIDEO_TRACKS)
   player.vlcProcess.stdin.write('vtrack\r\n')
@@ -374,6 +384,11 @@ player.methods[METHODS.MODIFY_VOLUME] = function (data) {
   }
 
   return { result: returnedResult, data: returnedData }
+}
+
+player.methods[METHODS.SET_VIDEO_TRACK] = function (data) {
+  console.log('Set Video track: ' + JSON.stringify(player.context.tracks.video))
+  return { result: true, data: data }
 }
 
 player.methods[METHODS.GET_VIDEO_TRACKS] = function (data) {
