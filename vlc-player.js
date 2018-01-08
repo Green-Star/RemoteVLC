@@ -87,8 +87,6 @@ function initContext () {
 function parseTracks (data) {
   let parsedTracks = []
   let result = false
-  let remainingData = data
-
   let regexp = new RegExp(/(\+-{4}\[ (spu|audio|video)-es \]\r\n)/)
   let matchedData = data.match(regexp)
 
@@ -99,7 +97,7 @@ function parseTracks (data) {
   if (pos === -1) return { returnedResult: false, remainingData: data, tracks: parsedTracks }
 
   let tracksData = data.substr(matchedData[1].length, pos - matchedData[1].length)
-  remainingData = data.substr(pos + safeguard.length)
+  let remainingData = data.substr(pos + safeguard.length)
   result = true
 
   let subRegex = new RegExp(/\|\s(-?\d+)\s-(?:\s(.*)\s-)?\s(?:\[(.+)\]|([^*\r\n]+))(?:\s(\*?))?\r\n/, 'g')
