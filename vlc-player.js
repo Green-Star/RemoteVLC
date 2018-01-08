@@ -92,11 +92,11 @@ function parseTracks (data) {
   let regexp = new RegExp(/(\+-{4}\[ (spu|audio|video)-es \]\r\n)/)
   let matchedData = data.match(regexp)
 
-  if (!matchedData[1] || !matchedData[2]) return {result: false, remainingData: data, tracks: parsedTracks}
+  if (!matchedData || !matchedData[1] || !matchedData[2]) return { returnedResult: false, remainingData: data, tracks: parsedTracks }
 
   let safeguard = '+----[ end of ' + matchedData[2] + '-es ]\r\n'
   let pos = data.indexOf(safeguard)
-  if (pos === -1) return {resutl: false, remainingData: data, tracks: parsedTracks}
+  if (pos === -1) return { returnedResult: false, remainingData: data, tracks: parsedTracks }
 
   let tracksData = data.substr(matchedData[1].length, pos - matchedData[1].length)
   remainingData = data.substr(pos + safeguard.length)
@@ -116,7 +116,7 @@ function parseTracks (data) {
     parsedTracks.push(trackInfo)
   }
 
-  return { result: result, remainingData: remainingData, tracks: parsedTracks }
+  return { returnedResult: result, remainingData: remainingData, tracks: parsedTracks }
 }
 
 function checkNewTrackId (tracks, trackId) {
@@ -143,7 +143,7 @@ function startVLC (filename) {
   player.tasks.push(METHODS.INIT)
   
   /* Start media in pause mode */
-  player.pause()
+  setTimeout(player.pause, 500)
   
   /* Get media informations */
   setTimeout(getMediaInformations, 1000)
