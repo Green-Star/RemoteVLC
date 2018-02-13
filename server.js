@@ -1,25 +1,22 @@
-const child_process = require('child_process')
+const express = require('express')
+const http = require('http')
+const morgan = require('morgan')
 
 console.log('Starting Remote control for ' + process.argv[2])
 
 /*** Start player control ***/
 console.log('Spawning VLC ...')
 
-const vlc = child_process.spawn('vlc',
-				[ process.argv[2], '--fullscreen', '--play-and-exit', '-I rc' ])
-
-/* Start media in pause mode */
-vlc.stdin.write('pause\r\n')
-
-/* Get media informations */
-
-/* Record player's stdout callback function */
-vlc.stdout.on('data', (data) => {
-  console.log('Data coming from VLC : ['+data+']')
-})
-
+const player = require('./vlc-player')
+player.start('vlc', process.argv[2])
 
 /*** Start WebUI control ***/
 console.log('Spawning web UI')
 
-setTimeout(() => vlc.stdin.write('play\r\n'), 5000)
+const app = express()
+const router = require('./router')
+
+app.use('/', router)
+
+const server = http.createServer(app)
+server.listen(8080)
