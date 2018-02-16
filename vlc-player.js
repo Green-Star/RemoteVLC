@@ -142,28 +142,29 @@ function startVLC (filename) {
   player.vlcProcess.stdout.on('data', (data) => handleServerFeedback(player.tasks, data))
 
   player.tasks.push(newTask(METHODS.INIT))
-  
+
   /* Start media in pause mode */
-  setTimeout(player.pause, 500)
-  
+  setTimeout(player.pause, 300)
+
   /* Get media informations */
-  setTimeout(getMediaInformations, 1000)
+  setTimeout(player.getMediaInformations, 1000)
 }
 
-function getMediaInformations () {
-  player.getTitle()
-  player.getLength()
-  player.getTime()
-  player.getVolume()
-  player.getVideoTracks()
-  player.getAudioTracks()
-  player.getSubtitleTracks()
+player.getMediaInformations = function () {
+  return Promise.all([
+    player.getTitle(),
+    player.getLength(),
+    player.getTime(),
+    player.getVolume(),
+    player.getVideoTracks(),
+    player.getAudioTracks(),
+    player.getSubtitleTracks()
+  ])
 }
 
 player.start = function (playerName, filename) {
   initContext()
   startVLC(filename)
-  console.log('TODO : Start player')
 }
 
 player.pause = function () {
