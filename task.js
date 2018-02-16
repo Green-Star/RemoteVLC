@@ -1,6 +1,6 @@
 module.exports = {
   /* I have to give credit to https://stackoverflow.com/a/45363133/7683968 for this one :) */
-  newTask: function () {
+  newTask: function (name) {
     let _resolve, _reject
 
     let promise = new Promise(function(resolve, reject) {
@@ -11,6 +11,6 @@ module.exports = {
     promise.resolve = _resolve
     promise.reject = _reject
 
-    return promise
+    return { name: name, promise: promise }
   }
 }
