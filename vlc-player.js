@@ -1,4 +1,5 @@
 const child_process = require('child_process')
+const newTask = require('./task').newTask
 
 const player = {}
 
@@ -52,15 +53,17 @@ function handleServerFeedback (tasksToDo, data) {
   console.log('Data: ' + JSON.stringify(pendingData))
 
   for (let task of tasksToDo) {
-    console.log('Execute: ' + task)
+    console.log('Execute: ' + task.name)
 
-    let end = player.methods[task](pendingData)
+    let end = player.methods[task.name](pendingData)
     if (end.result === false) break
 
     /* If the function succeeded we can remove it from the pending tasks */
     pendingTasks.shift()
     /* And it has consume the relevant data, so we remove them too */
     pendingData = end.data
+    /* And we resolve the promise */
+    task.promise.resolve(player.context)
   }
 
   player.tasks = pendingTasks
@@ -138,7 +141,7 @@ function startVLC (filename) {
   player.vlcProcess.stdout.setEncoding('utf8')
   player.vlcProcess.stdout.on('data', (data) => handleServerFeedback(player.tasks, data))
 
-  player.tasks.push(METHODS.INIT)
+  player.tasks.push(newTask(METHODS.INIT))
   
   /* Start media in pause mode */
   setTimeout(player.pause, 500)
@@ -164,86 +167,138 @@ player.start = function (playerName, filename) {
 }
 
 player.pause = function () {
-  player.tasks.push(METHODS.PAUSE)
+  let task = newTask(METHODS.PAUSE)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('pause\r\n')
+
+  return task.promise
 }
 
 player.play = function () {
-  player.pause()
+  return player.pause()
 }
 
 player.setTime = function (time) {
-  player.tasks.push(METHODS.SET_TIME)
+  let task = newTask(METHODS.SET_TIME)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('seek ' + time + '\r\n')
   player.context.time = time
+
+  return task.promise
 }
 
 player.getTime = function () {
-  player.tasks.push(METHODS.GET_TIME)
+  let task = newTask(METHODS.GET_TIME)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('get_time\r\n')
+
+  return task.promise
 }
 
 player.getTitle = function () {
-  player.tasks.push(METHODS.GET_TITLE)
+  let task = newTask(METHODS.GET_TITLE)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('get_title\r\n')
+
+  return task.promise
 }
 
 player.getLength = function () {
-  player.tasks.push(METHODS.GET_LENGTH)
+  let task = newTask(METHODS.GET_LENGTH)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('get_length\r\n')
+
+  return task.promise
 }
 
 player.setVolume = function (volume) {
-  player.tasks.push(METHODS.SET_VOLUME)
+  let task = newTask(METHODS.SET_VOLUME)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('volume ' + volume + '\r\n')
   player.context.volume = volume
+
+  return task.promise
 }
 
 player.getVolume = function () {
-  player.tasks.push(METHODS.GET_VOLUME)
+  let task = newTask(METHODS.GET_VOLUME)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('volume\r\n')
+
+  return task.promise
 }
 
 player.volumeUp = function () {
-  player.tasks.push(METHODS.MODIFY_VOLUME)
+  let task = newTask(METHODS.MODIFY_VOLUME)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('volup\r\n')
+
+  return task.promise
 }
 
 player.volumeDown = function () {
-  player.tasks.push(METHODS.MODIFY_VOLUME)
+  let task = newTask(METHODS.MODIFY_VOLUME)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('voldown\r\n')
+
+  return task.promise
 }
 
 player.mute = function () {
-  player.setVolume(0)
+  return player.setVolume(0)
 }
 
 player.setVideoTrack = function (trackId) {
   let newTrackIndex = checkNewTrackId(player.context.tracks.video, trackId)
   if (newTrackIndex === -1) return
 
-  player.tasks.push(METHODS.SET_VIDEO_TRACK)
+  let task = newTask(METHODS.SET_VIDEO_TRACK)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('vtrack ' + trackId + '\r\n')
   updateTrack(player.context.tracks.video, newTrackIndex)
+
+  return task.promise
 }
 
 player.getVideoTracks = function () {
-  player.tasks.push(METHODS.GET_VIDEO_TRACKS)
+  let task = newTask(METHODS.GET_VIDEO_TRACKS)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('vtrack\r\n')
+
+  return task.promise
 }
 
 player.setAudioTrack = function (trackId) {
   let newTrackIndex = checkNewTrackId(player.context.tracks.audio, trackId)
   if (newTrackIndex === -1) return
 
-  player.tasks.push(METHODS.SET_AUDIO_TRACK)
+  let task = newTask(METHODS.SET_AUDIO_TRACK)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('atrack ' + trackId + '\r\n')
   updateTrack(player.context.tracks.audio, newTrackIndex)
+
+  return task.promise
 }
 
 player.getAudioTracks = function () {
-  player.tasks.push(METHODS.GET_AUDIO_TRACKS)
+  let task = newTask(METHODS.GET_AUDIO_TRACKS)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('atrack\r\n')
+
+  return task.promise
 }
 
 player.setSubtitleTrack = function (trackId) {
@@ -251,14 +306,22 @@ player.setSubtitleTrack = function (trackId) {
   let newTrackIndex = checkNewTrackId(player.context.tracks.subtitle, trackId)
   if (newTrackIndex === -1) return
 
-  player.tasks.push(METHODS.SET_SUBTITLE_TRACK)
+  let task = newTask(METHODS.SET_SUBTITLE_TRACK)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('strack ' + trackId + '\r\n')
   updateTrack(player.context.tracks.subtitle, newTrackIndex)
+
+  return task.promise
 }
 
 player.getSubtitleTracks = function () {
-  player.tasks.push(METHODS.GET_SUBTITLE_TRACKS)
+  let task = newTask(METHODS.GET_SUBTITLE_TRACKS)
+
+  player.tasks.push(task)
   player.vlcProcess.stdin.write('strack\r\n')
+
+  return task.promise
 }
 
 /*** --------------------------------------------------- ***
