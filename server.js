@@ -16,6 +16,9 @@ console.log('Spawning web UI')
 const app = express()
 const router = require('./router')
 
+router.create(player)
+/* Use client/dist folder to serve static files */
+app.use(express.static(__dirname + '/client/dist'))
 app.use('/', router)
 
 const server = http.createServer(app)
