@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 
-import { Player } from '../player'
+import { Player } from '../models'
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
