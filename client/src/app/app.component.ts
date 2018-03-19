@@ -14,6 +14,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
   	//this.player = this.playerService.init()
-  	//this.playerService.init().subscribe(data => this.player = data)
+  	this.playerService.init().subscribe(data => this.player = data)
   }
 }

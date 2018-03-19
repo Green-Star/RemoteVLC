@@ -8,7 +8,7 @@ import { Player, Track } from '../models'
   styleUrls: ['./player.component.css']
 })
 export class PlayerComponent implements OnInit {
-  player: Player
+  @Input() player: Player
   selectedVideoTrack: Track
   selectedAudioTrack: Track
   selectedSubtitleTrack: Track
@@ -16,13 +16,9 @@ export class PlayerComponent implements OnInit {
   constructor(private playerService : PlayerService) {}
 
   ngOnInit() {
-    this.player = undefined
-    this.playerService.init().subscribe(data => {
-      this.player = data
-      this.selectedVideoTrack = this.getSelectedVideoTrack()
-      this.selectedAudioTrack = this.getSelectedAudioTrack()
-      this.selectedSubtitleTrack = this.getSelectedSubtitleTrack()
-    })
+    this.selectedVideoTrack = this.getSelectedVideoTrack()
+    this.selectedAudioTrack = this.getSelectedAudioTrack()
+    this.selectedSubtitleTrack = this.getSelectedSubtitleTrack()
   }
 
   debug() {
