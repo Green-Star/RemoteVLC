@@ -8,10 +8,12 @@ import { PlayerService } from './service'
 })
 export class AppComponent implements OnInit {
   title = 'app';
+  player = undefined
 
   constructor(private playerService : PlayerService) {}
 
   ngOnInit() {
-    this.playerService.init()
+  	//this.player = this.playerService.init()
+  	//this.playerService.init().subscribe(data => this.player = data)
   }
 }
