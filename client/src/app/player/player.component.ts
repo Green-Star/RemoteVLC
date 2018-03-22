@@ -17,12 +17,14 @@ export class PlayerComponent implements OnInit {
 
   ngOnInit() {
     this.player = undefined
-    this.playerService.init().subscribe(data => {
+    this.playerService.init().subscribe(data => this.updatePlayerData(data))
+  }
+
+  updatePlayerData(data: Player) {
       this.player = data
       this.selectedVideoTrack = this.getSelectedVideoTrack()
       this.selectedAudioTrack = this.getSelectedAudioTrack()
       this.selectedSubtitleTrack = this.getSelectedSubtitleTrack()
-    })
   }
 
   debug() {
@@ -72,12 +74,12 @@ export class PlayerComponent implements OnInit {
   }
 
   volumeDown() {
-  	this.playerService.volumeDown()
+    this.playerService.volumeDown().subscribe(data => this.updatePlayerData(data))
   }
   volumeUp() {
-  	this.playerService.volumeUp()
+    this.playerService.volumeUp().subscribe(data => this.updatePlayerData(data))
   }
   setVolume(volume: number) {
-  	this.playerService.setVolume(volume)
+    this.playerService.setVolume(volume).subscribe(data => this.updatePlayerData(data))
   }
 }
