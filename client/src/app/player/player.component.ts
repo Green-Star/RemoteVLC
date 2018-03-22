@@ -57,10 +57,10 @@ export class PlayerComponent implements OnInit {
     return this.player.isPlaying
   }
   pause() {
-    this.playerService.pause()
+    this.playerService.pause().subscribe(data => this.updatePlayerData(data))
   }
   play() {
-    this.playerService.play()
+    this.playerService.play().subscribe(data => this.updatePlayerData(data))
   }
   setTime(seconds: number) {
     if (seconds < 0) seconds = 0

@@ -30,11 +30,11 @@ export class PlayerService {
     return this.player
   }
 
-  pause() {
-    console.log('Pause')
+  pause(): Observable<Player> {
+    return this.http.put<Player>(`${this.apiRoute}/pause`, null)
   }
-  play() {
-    console.log('Play')
+  play(): Observable<Player> {
+    return this.http.put<Player>(`${this.apiRoute}/play`, null)
   }
   setTime(seconds: number) {
     console.log(`Time: ${seconds}`)
