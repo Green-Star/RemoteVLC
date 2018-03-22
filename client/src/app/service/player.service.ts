@@ -40,14 +40,14 @@ export class PlayerService {
     console.log(`Time: ${seconds}`)
   }
 
-  volumeDown() {
-  	console.log('Volume down')
+  volumeDown(): Observable<Player> {
+    return this.http.put<Player>(`${this.volumeRoute}/down`, null)
   }
-  volumeUp() {
-  	console.log('Volume UP')
+  volumeUp(): Observable<Player> {
+    return this.http.put<Player>(`${this.volumeRoute}/up`, null)
   }
-  setVolume(volume: number) {
-  	console.log(`Volume: ${volume}`)
+  setVolume(volume: number): Observable<Player> {
+    return this.http.put<Player>(`${this.volumeRoute}/${volume}`, null)
   }
 
   setTrack(type: string, track: Track) {
