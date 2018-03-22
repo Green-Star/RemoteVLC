@@ -9,6 +9,8 @@ const httpOptions = {
 
 @Injectable()
 export class PlayerService {
+  apiRoute: string = '/api'
+  volumeRoute: string = `${this.apiRoute}/volume`
   player: Player = undefined
 
   constructor(
@@ -19,7 +21,7 @@ export class PlayerService {
   }
 
   refresh(): Observable<Player> {
-    return this.http.get<Player>('/api/all')
+    return this.http.get<Player>(`${this.apiRoute}/all`)
     				//.map((res: Response) => {return res.json()})
                     //.subscribe(data => {this.player = data; console.log(this.player)})
   }
