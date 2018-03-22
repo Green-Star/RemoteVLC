@@ -58,11 +58,9 @@ export class PlayerComponent implements OnInit {
   }
   pause() {
     this.playerService.pause()
-    this.player.isPlaying = !this.player.isPlaying
   }
   play() {
     this.playerService.play()
-    this.player.isPlaying = !this.player.isPlaying
   }
   setTime(seconds: number) {
     if (seconds < 0) seconds = 0
