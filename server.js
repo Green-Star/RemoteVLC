@@ -31,7 +31,8 @@ const playerTest = {
       {id: 4, title: "FR", language: "Français", selected: false},
       {id: 5, title: "EN",language: "Anglais", selected: false}
     ]
-  }
+  },
+  timer: undefined
 }
 const player = playerTest
 

@@ -38,12 +38,13 @@ function pong (req, res, next) {
 }
 
 function getMediaInformations (req, res, next) {
-  return res.json(apiRouter.player)
+  return res.json(playerToJSON(apiRouter.player))
 }
 
 function play (req, res, next) {
-  apiRouter.player.isPlaying = !apiRouter.player.isPlaying
-  return res.json(apiRouter.player)
+  apiRouter.player.isPlaying = true
+  apiRouter.player.timer = setInterval(updatePlayer, 1000)
+  return res.json(playerToJSON(apiRouter.player))
 }
 
 function getVolume (req, res, next) {
@@ -51,7 +52,7 @@ function getVolume (req, res, next) {
     .then(context => res.json(context))
     .catch(err => next(err))
 */
-  return res.json(apiRouter.player)
+  return res.json(playerToJSON(apiRouter.player))
 }
 
 function setVolume (req, res, next) {
@@ -60,19 +61,19 @@ function setVolume (req, res, next) {
   apiRouter.player.volume = volume
   let result = apiRouter.player
 
-  return res.json(apiRouter.player)
+  return res.json(playerToJSON(apiRouter.player))
 }
 
 function volumeUp (req, res, next) {
   apiRouter.player.volume += 10
 
-  return res.json(apiRouter.player)
+  return res.json(playerToJSON(apiRouter.player))
 }
 
 function volumeDown (req, res, next) {
   apiRouter.player.volume -= 10
 
-  return res.json(apiRouter.player)
+  return res.json(playerToJSON(apiRouter.player))
 }
 
 function setTime (req, res, next) {
@@ -81,17 +82,32 @@ function setTime (req, res, next) {
   apiRouter.player.time = time
   let result = apiRouter.player
 
-  return res.json(result)
+  return res.json(playerToJSON(result))
 }
 
 function getTime (req, res, next) {
   let result = apiRouter.player
 //      .then(context => res.json(context))
 //      .catch(err => next(err))
-  return res.json(result)
+  return res.json(playerToJSON(result))
 }
 
 function todo (req, res, next) {
   console.log('Not yet implemented')
   return res.send('Not yet implemented').status(200).end()
+}
+
+function playerToJSON (player) {
+  return {
+    title: player.title,
+    isPlaying: player.isPlaying,
+    volume: player.volume,
+    time: player.time,
+    length: player.length,
+    tracks: player.tracks
+  }
+}
+
+function updatePlayer () {
+  apiRouter.player.time++
 }
