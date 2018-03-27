@@ -4,11 +4,10 @@ import { FormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
 import { PlayerService } from './service'
 
-import { AppComponent } from './app.component';
-import { PlayerComponent } from './player/player.component'
+import { DisplaySecondsPipe, DisplayTrackPipe } from './pipes'
 
-import { DisplaySecondsPipe } from './display-seconds.pipe'
-import { DisplayTrackPipe } from './display-track.pipe';
+import { AppComponent } from './app.component'
+import { PlayerComponent } from './player/player.component'
 import { TimerComponent } from './timer/timer.component'
 
 @NgModule({
