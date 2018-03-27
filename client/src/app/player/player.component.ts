@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { PlayerService } from '../service'
 import { Player, Track } from '../models'
-
 import { TimerComponent } from '../timer/timer.component'
 
 @Component({
