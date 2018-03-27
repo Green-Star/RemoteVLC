@@ -8,14 +8,16 @@ import { AppComponent } from './app.component';
 import { PlayerComponent } from './player/player.component'
 
 import { DisplaySecondsPipe } from './display-seconds.pipe'
-import { DisplayTrackPipe } from './display-track.pipe'
+import { DisplayTrackPipe } from './display-track.pipe';
+import { TimerComponent } from './timer/timer.component'
 
 @NgModule({
   declarations: [
     AppComponent,
     PlayerComponent,
     DisplaySecondsPipe,
-    DisplayTrackPipe
+    DisplayTrackPipe,
+    TimerComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ViewChild } from '@angular/core'
 import { PlayerService } from '../service'
 import { Player, Track } from '../models'
+
+import { TimerComponent } from '../timer/timer.component'
 
 @Component({
   selector: 'app-player',
@@ -12,6 +14,7 @@ export class PlayerComponent implements OnInit {
   selectedVideoTrack: Track
   selectedAudioTrack: Track
   selectedSubtitleTrack: Track
+  @ViewChild(TimerComponent) timerComponent: TimerComponent
 
   constructor(private playerService : PlayerService) {}
 
@@ -25,6 +28,8 @@ export class PlayerComponent implements OnInit {
       this.selectedVideoTrack = this.getSelectedVideoTrack()
       this.selectedAudioTrack = this.getSelectedAudioTrack()
       this.selectedSubtitleTrack = this.getSelectedSubtitleTrack()
+      if (this.timerComponent === undefined) return
+      this.timerComponent.updateTimer(this.player.time)
   }
 
   debug() {
@@ -57,17 +62,23 @@ export class PlayerComponent implements OnInit {
     return this.player.isPlaying
   }
   pause() {
-    this.playerService.pause().subscribe(data => this.updatePlayerData(data))
+    this.playerService.pause().subscribe(data => {
+      this.updatePlayerData(data)
+      this.timerComponent.stopTimer()
+    })
   }
   play() {
-    this.playerService.play().subscribe(data => this.updatePlayerData(data))
+    this.playerService.play().subscribe(data => {
+      this.updatePlayerData(data)
+      this.timerComponent.startTimer()
+    })
   }
   setTime(seconds: number) {
     if (seconds < 0) seconds = 0
     this.playerService.setTime(seconds).subscribe(data => this.updatePlayerData(data))
   }
   addTime(seconds: number) {
-    this.setTime(this.player.time + seconds)
+    this.setTime(this.timerComponent.getTimer() + seconds)
   }
 
   volumeDown() {
