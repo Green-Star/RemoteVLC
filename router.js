@@ -7,7 +7,7 @@ apiRouter.player = {}
 apiRouter.get('/api', todo)
 apiRouter.get('/api/all', getMediaInformations)
 
-apiRouter.put('/api/pause', play)
+apiRouter.put('/api/pause', pause)
 apiRouter.put('/api/play', play)
 
 apiRouter.get('/api/time', getTime)
@@ -44,6 +44,12 @@ function getMediaInformations (req, res, next) {
 function play (req, res, next) {
   apiRouter.player.isPlaying = true
   apiRouter.player.timer = setInterval(updatePlayer, 1000)
+  return res.json(playerToJSON(apiRouter.player))
+}
+
+function pause (req, res, next) {
+  apiRouter.player.isPlaying = false
+  clearInterval(apiRouter.player.timer)
   return res.json(playerToJSON(apiRouter.player))
 }
 
