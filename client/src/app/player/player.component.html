@@ -1,4 +1,4 @@
-<div *ngIf="player">
+<div *ngIf="player" class="main-container">
 
   <div>
     {{ player.title }}
@@ -6,9 +6,11 @@
   </div>
   <div>
     TIME DIV
-    <app-timer [length]="player.length"></app-timer>
+    <app-timer
+      [isPlaying]="player.isPlaying"
+      [time]="player.time"
+      [length]="player.length"></app-timer>
 
-    {{ player.time | displaySeconds }} / {{ player.length | displaySeconds }}
     <a *ngIf="isPlaying()" (click)="pause()">Pause</a><a *ngIf="!isPlaying()" (click)="play()">Play</a>
     <a (click)="addTime(-60)">-60</a> <a (click)="addTime(-30)">-30</a>
     <a (click)="addTime(-10)">-10</a> <a (click)="addTime(+10)">+10</a>

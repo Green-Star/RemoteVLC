@@ -6,16 +6,18 @@ import { Component, OnInit, Input } from '@angular/core'
   styleUrls: ['./timer.component.css']
 })
 export class TimerComponent implements OnInit {
+  @Input() isPlaying: boolean
   @Input() length: number
-  time: number
+  @Input() time: number
 
   timer: number
 
   constructor() {}
 
   ngOnInit() {
-    this.time = 0
-    this.timer = undefined
+    if (this.isPlaying === true) {
+      this.startTimer()
+    }
   }
 
   private updateSeconds() {
