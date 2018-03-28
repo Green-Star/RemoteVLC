@@ -11,7 +11,6 @@ const httpOptions = {
 export class PlayerService {
   apiRoute: string = '/api'
   volumeRoute: string = `${this.apiRoute}/volume`
-  player: Player = undefined
 
   constructor(
     private http: HttpClient) { }
@@ -22,12 +21,6 @@ export class PlayerService {
 
   refresh(): Observable<Player> {
     return this.http.get<Player>(`${this.apiRoute}/all`)
-    				//.map((res: Response) => {return res.json()})
-                    //.subscribe(data => {this.player = data; console.log(this.player)})
-  }
-
-  getPlayerInformations() : Player {
-    return this.player
   }
 
   pause(): Observable<Player> {
