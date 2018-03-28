@@ -50,7 +50,7 @@ export class PlayerService {
     return this.http.put<Player>(`${this.volumeRoute}/${volume}`, null)
   }
 
-  setTrack(type: string, track: Track) {
-    console.log(`New ${type} track: ${track.id}`)
+  setTrack(type: string, trackId: number): Observable<Player> {
+    return this.http.put<Player>(`${this.apiRoute}/${type}/${trackId}`, null)
   }
 }

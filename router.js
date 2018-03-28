@@ -18,9 +18,9 @@ apiRouter.put('/api/volume/up', volumeUp)
 apiRouter.put('/api/volume/down', volumeDown)
 apiRouter.put('/api/volume/:volume', setVolume)
 
-apiRouter.put('/api/video/:id', todo)
-apiRouter.put('/api/audio/:id', todo)
-apiRouter.put('/api/subtitle/:id', todo)
+apiRouter.put('/api/video/:id', setVideoTrack)
+apiRouter.put('/api/audio/:id', setAudioTrack)
+apiRouter.put('/api/subtitle/:id', setSubtitleTrack)
 apiRouter.get('/ping', pong)
 
 apiRouter.use('/*', function (req, res, next) {
@@ -97,6 +97,56 @@ function getTime (req, res, next) {
 //      .catch(err => next(err))
   return res.json(playerToJSON(result))
 }
+
+
+function setVideoTrack (req, res, next) {
+  let id = +req.params.id
+  // apiRouter.player
+  //          .setVideoTrack(id)
+  //          .then(context => res.json(playerToJSON(context)))
+  //          .catch(err => next(err))
+
+  let oldTrackIndex = apiRouter.player.tracks.video.findIndex(track => track.selected === true)
+  let newTrackIndex = apiRouter.player.tracks.video.findIndex(track => track.id === id)
+  if (oldTrackIndex === -1 || newTrackIndex === -1) return
+
+  apiRouter.player.tracks.video[oldTrackIndex].selected = false
+  apiRouter.player.tracks.video[newTrackIndex].selected = true
+  return res.json(playerToJSON(apiRouter.player))
+}
+
+function setAudioTrack (req, res, next) {
+  let id = +req.params.id
+  // apiRouter.player
+  //          .setAudioTrack(id)
+  //          .then(context => res.json(playerToJSON(context)))
+  //          .catch(err => next(err))
+
+  let oldTrackIndex = apiRouter.player.tracks.audio.findIndex(track => track.selected === true)
+  let newTrackIndex = apiRouter.player.tracks.audio.findIndex(track => track.id === id)
+  if (oldTrackIndex === -1 || newTrackIndex === -1) return
+
+  apiRouter.player.tracks.audio[oldTrackIndex].selected = false
+  apiRouter.player.tracks.audio[newTrackIndex].selected = true
+  return res.json(playerToJSON(apiRouter.player))
+}
+
+function setSubtitleTrack (req, res, next) {
+  let id = +req.params.id
+  // apiRouter.player
+  //          .setSubtitleTrack(id)
+  //          .then(context => res.json(playerToJSON(context)))
+  //          .catch(err => next(err))
+
+  let oldTrackIndex = apiRouter.player.tracks.subtitle.findIndex(track => track.selected === true)
+  let newTrackIndex = apiRouter.player.tracks.subtitle.findIndex(track => track.id === id)
+  if (oldTrackIndex === -1 || newTrackIndex === -1) return
+
+  apiRouter.player.tracks.subtitle[oldTrackIndex].selected = false
+  apiRouter.player.tracks.subtitle[newTrackIndex].selected = true
+  return res.json(playerToJSON(apiRouter.player))
+}
+
 
 function todo (req, res, next) {
   console.log('Not yet implemented')

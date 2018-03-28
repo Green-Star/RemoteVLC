@@ -40,21 +40,21 @@ export class PlayerComponent implements OnInit {
   }
   setSelectedVideoTrack(newTrack: Track) {
     this.selectedVideoTrack = newTrack
-    this.playerService.setTrack('video', newTrack)
+    this.setTrack('video', newTrack)
   }
   getSelectedAudioTrack() {
     return this.player.tracks['audio'].find(track => track.selected === true)
   }
   setSelectedAudioTrack(newTrack: Track) {
     this.selectedAudioTrack = newTrack
-    this.playerService.setTrack('audio', newTrack)
+    this.setTrack('audio', newTrack)
   }
   getSelectedSubtitleTrack() {
     return this.player.tracks['subtitle'].find(track => track.selected === true)
   }
   setSelectedSubtitleTrack(newTrack: Track) {
     this.selectedSubtitleTrack = newTrack
-    this.playerService.setTrack('subtitle', newTrack)
+    this.setTrack('subtitle', newTrack)
   }
 
   isPlaying() {
@@ -88,5 +88,9 @@ export class PlayerComponent implements OnInit {
   }
   setVolume(volume: number) {
     this.playerService.setVolume(volume).subscribe(data => this.updatePlayerData(data))
+  }
+
+  setTrack(type: string, track: Track) {
+    this.playerService.setTrack(type, track.id).subscribe(data => this.updatePlayerData(data))
   }
 }
