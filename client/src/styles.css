@@ -8,22 +8,48 @@ html {
 	line-height: 20px;
 }
 
+@media all and (max-width: 700px) {
+	html {
+		font-size: 15px;
+		line-height: 24px;
+	}
+}
+
 body {
     background-color: black;
     color: lightgrey;
+    width: 100vw;
+    height: 100vh;
 }
 
-a {
-	border-style: solid;
-	color: lightgrey;
-	margin: 2px 2px 2px 2px;
-	padding: 2px 2px 2px 2px;
-	width: 5rem;
-	height: 2rem;
+@media all and (min-width: 700px) {
+	body {
+		width: 50vw;
+	}
 }
 
-@media all and (max-width: 700px) {
-    body {
-	width: 100%;
-    }
+.main-container {
+	background-color: cyan;
+	display: flex;
+	flex-direction: column;
+}
+
+.component-container {
+	background-color: green;
+	display: flex;
+	flex-direction: column;
+}
+
+.data-container {
+	background-color: red;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+	margin: 1rem 1rem 1rem 1rem;
+}
+
+.data-container strong {
+	font-weight: bold;
+	font-size: 20px;
 }
