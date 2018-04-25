@@ -29,19 +29,16 @@ body {
 }
 
 .main-container {
-	background-color: cyan;
 	display: flex;
 	flex-direction: column;
 }
 
 .component-container {
-	background-color: green;
 	display: flex;
 	flex-direction: column;
 }
 
 .data-container {
-	background-color: red;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
