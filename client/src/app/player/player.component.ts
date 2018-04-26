@@ -31,10 +31,6 @@ export class PlayerComponent implements OnInit {
       this.timerComponent.updateTimer(this.player.time)
   }
 
-  debug() {
-  	console.log(JSON.stringify(this.player))
-  }
-
   getSelectedVideoTrack() {
     return this.player.tracks['video'].find(track => track.selected === true)
   }
