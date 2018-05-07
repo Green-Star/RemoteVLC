@@ -38,74 +38,119 @@ function pong (req, res, next) {
 }
 
 function getMediaInformations (req, res, next) {
-  return res.json(playerToJSON(apiRouter.player))
+  /* player.getMediaInformations returns an array filled with the results of all the promises created */
+  /* In this case, we need to return only one result of this array (say array[0]) */
+  apiRouter.player
+    .getMediaInformations()
+    .then(context => res.json(playerToJSON(context[0])))
+    .catch(err => next(err))
+//  return res.json(playerToJSON(apiRouter.player))
 }
 
 function play (req, res, next) {
+  /*
   apiRouter.player.isPlaying = true
   apiRouter.player.timer = setInterval(updatePlayer, 1000)
   return res.json(playerToJSON(apiRouter.player))
+  */
+  apiRouter.player
+    .play()
+    .then(context => res.json(playerToJSON(context)))
+    .catch(err => next(err))
 }
 
 function pause (req, res, next) {
+  /*
   apiRouter.player.isPlaying = false
   clearInterval(apiRouter.player.timer)
   return res.json(playerToJSON(apiRouter.player))
+  */
+  apiRouter.player
+    .pause()
+    .then(context => res.json(playerToJSON(context)))
+    .catch(err => next(err))
 }
 
 function getVolume (req, res, next) {
-/*  apiRouter.player
+  apiRouter.player
+    .getVolume()
     .then(context => res.json(context))
     .catch(err => next(err))
-*/
-  return res.json(playerToJSON(apiRouter.player))
+//  return res.json(playerToJSON(apiRouter.player))
 }
 
 function setVolume (req, res, next) {
   let volume = +req.params.volume
 
+  apiRouter.player
+    .setVolume(volume)
+    .then(context => res.json(playerToJSON(context)))
+    .catch(err => next(err))
+/*
   apiRouter.player.volume = volume
   let result = apiRouter.player
 
   return res.json(playerToJSON(apiRouter.player))
+  */
 }
 
 function volumeUp (req, res, next) {
+  /*
   apiRouter.player.volume += 10
 
   return res.json(playerToJSON(apiRouter.player))
+  */
+  apiRouter.player
+    .volumeUp()
+    .then(context => res.json(playerToJSON(context)))
+    .catch(err => next(err))
 }
 
 function volumeDown (req, res, next) {
+  /*
   apiRouter.player.volume -= 10
 
   return res.json(playerToJSON(apiRouter.player))
+  */
+  apiRouter.player
+    .volumeDown()
+    .then(context => res.json(playerToJSON(context)))
+    .catch(err => next(err))
 }
 
 function setTime (req, res, next) {
   let time = +req.params.time
-
+  /*
   apiRouter.player.time = time
   let result = apiRouter.player
 
   return res.json(playerToJSON(result))
+  */
+  apiRouter.player
+    .setTime(time)
+    .then(context => res.json(playerToJSON(context)))
+    .catch(err => next(err))
 }
 
 function getTime (req, res, next) {
+  /*
   let result = apiRouter.player
 //      .then(context => res.json(context))
 //      .catch(err => next(err))
   return res.json(playerToJSON(result))
+  */
 }
 
 
 function setVideoTrack (req, res, next) {
   let id = +req.params.id
-  // apiRouter.player
-  //          .setVideoTrack(id)
-  //          .then(context => res.json(playerToJSON(context)))
-  //          .catch(err => next(err))
+  
+  apiRouter.player
+    .setVideoTrack(id)
+    .then(context => res.json(playerToJSON(context)))
+    .catch(err => next(err))
 
+/*
   let oldTrackIndex = apiRouter.player.tracks.video.findIndex(track => track.selected === true)
   let newTrackIndex = apiRouter.player.tracks.video.findIndex(track => track.id === id)
   if (oldTrackIndex === -1 || newTrackIndex === -1) return
@@ -113,15 +158,18 @@ function setVideoTrack (req, res, next) {
   apiRouter.player.tracks.video[oldTrackIndex].selected = false
   apiRouter.player.tracks.video[newTrackIndex].selected = true
   return res.json(playerToJSON(apiRouter.player))
+  */
 }
 
 function setAudioTrack (req, res, next) {
   let id = +req.params.id
-  // apiRouter.player
-  //          .setAudioTrack(id)
-  //          .then(context => res.json(playerToJSON(context)))
-  //          .catch(err => next(err))
+  
+  apiRouter.player
+    .setAudioTrack(id)
+    .then(context => res.json(playerToJSON(context)))
+    .catch(err => next(err))
 
+/*
   let oldTrackIndex = apiRouter.player.tracks.audio.findIndex(track => track.selected === true)
   let newTrackIndex = apiRouter.player.tracks.audio.findIndex(track => track.id === id)
   if (oldTrackIndex === -1 || newTrackIndex === -1) return
@@ -129,15 +177,18 @@ function setAudioTrack (req, res, next) {
   apiRouter.player.tracks.audio[oldTrackIndex].selected = false
   apiRouter.player.tracks.audio[newTrackIndex].selected = true
   return res.json(playerToJSON(apiRouter.player))
+  */
 }
 
 function setSubtitleTrack (req, res, next) {
   let id = +req.params.id
-  // apiRouter.player
-  //          .setSubtitleTrack(id)
-  //          .then(context => res.json(playerToJSON(context)))
-  //          .catch(err => next(err))
+  
+  apiRouter.player
+    .setSubtitleTrack(id)
+    .then(context => res.json(playerToJSON(context)))
+    .catch(err => next(err))
 
+/*
   let oldTrackIndex = apiRouter.player.tracks.subtitle.findIndex(track => track.selected === true)
   let newTrackIndex = apiRouter.player.tracks.subtitle.findIndex(track => track.id === id)
   if (oldTrackIndex === -1 || newTrackIndex === -1) return
@@ -145,6 +196,7 @@ function setSubtitleTrack (req, res, next) {
   apiRouter.player.tracks.subtitle[oldTrackIndex].selected = false
   apiRouter.player.tracks.subtitle[newTrackIndex].selected = true
   return res.json(playerToJSON(apiRouter.player))
+  */
 }
 
 
@@ -162,8 +214,4 @@ function playerToJSON (player) {
     length: player.length,
     tracks: player.tracks
   }
-}
-
-function updatePlayer () {
-  apiRouter.player.time++
 }

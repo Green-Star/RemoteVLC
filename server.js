@@ -1,17 +1,25 @@
 const express = require('express')
 const http = require('http')
 const morgan = require('morgan')
-const newTask = require('./task').newTask
+const bodyParser = require('body-parser')
+const methodOverride = require('method-override')
+
+if (!process.argv[2]) {
+  console.log('Error: Missing media filename to play')
+  console.log('Usage: ' + process.argv[0] + " " + process.argv[1] + " <media filename>")
+  process.exit(1)
+}
 
 console.log('Starting Remote control for ' + process.argv[2])
 
 /*** Start player control ***/
 console.log('Spawning VLC ...')
 
-//const player = require('./vlc-player')
-//player.start('vlc', process.argv[2])
+const player = require('./vlc-player')
+player.start('vlc', process.argv[2])
 
 // Use a mock player when building WebUI
+/*
 const playerTest = {
   title: "La grande aventure Lego.mkv",
   isPlaying: false,
@@ -35,6 +43,7 @@ const playerTest = {
   timer: undefined
 }
 const player = playerTest
+*/
 
 /*** Start WebUI control ***/
 console.log('Spawning web UI')
@@ -45,6 +54,12 @@ const router = require('./router')
 router.create(player)
 /* Use client/dist folder to serve static files */
 app.use(express.static(__dirname + '/client/dist'))
+
+app.use(bodyParser.urlencoded({extended:true}));// get information from html forms
+app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+app.use(methodOverride());
+
 app.use('/', router)
 
 const server = http.createServer(app)
