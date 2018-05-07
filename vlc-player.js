@@ -74,6 +74,11 @@ function handleServerFeedback (tasksToDo, data) {
   console.log('===  End  handleServerFeedback ===')
 }
 
+function updateSeconds () {
+  player.context.time++
+  console.log('Media time: ' + player.context.time)
+}
+
 function initContext () {
   player.context.title = ''
   player.context.isPlaying = true
@@ -85,6 +90,8 @@ function initContext () {
   player.context.tracks.video = []
   player.context.tracks.audio = []
   player.context.tracks.subtitle = []
+
+  player.context.timer = setInterval(updateSeconds, 1000)
 }
 
 function parseTracks (data) {
@@ -349,6 +356,12 @@ player.methods[METHODS.PAUSE] = function (data) {
   let returnedData = data
 
   player.context.isPlaying = !player.context.isPlaying
+
+  if (player.context.isPlaying === true) {
+    player.context.timer = setInterval(updateSeconds, 1000)
+  } else {
+    clearInterval(player.context.timer)
+  }
 
   return { result: true, data: returnedData }
 }
