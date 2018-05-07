@@ -44,15 +44,9 @@ function getMediaInformations (req, res, next) {
     .getMediaInformations()
     .then(context => res.json(playerToJSON(context[0])))
     .catch(err => next(err))
-//  return res.json(playerToJSON(apiRouter.player))
 }
 
 function play (req, res, next) {
-  /*
-  apiRouter.player.isPlaying = true
-  apiRouter.player.timer = setInterval(updatePlayer, 1000)
-  return res.json(playerToJSON(apiRouter.player))
-  */
   apiRouter.player
     .play()
     .then(context => res.json(playerToJSON(context)))
@@ -60,11 +54,6 @@ function play (req, res, next) {
 }
 
 function pause (req, res, next) {
-  /*
-  apiRouter.player.isPlaying = false
-  clearInterval(apiRouter.player.timer)
-  return res.json(playerToJSON(apiRouter.player))
-  */
   apiRouter.player
     .pause()
     .then(context => res.json(playerToJSON(context)))
@@ -76,7 +65,6 @@ function getVolume (req, res, next) {
     .getVolume()
     .then(context => res.json(context))
     .catch(err => next(err))
-//  return res.json(playerToJSON(apiRouter.player))
 }
 
 function setVolume (req, res, next) {
@@ -86,20 +74,9 @@ function setVolume (req, res, next) {
     .setVolume(volume)
     .then(context => res.json(playerToJSON(context)))
     .catch(err => next(err))
-/*
-  apiRouter.player.volume = volume
-  let result = apiRouter.player
-
-  return res.json(playerToJSON(apiRouter.player))
-  */
 }
 
 function volumeUp (req, res, next) {
-  /*
-  apiRouter.player.volume += 10
-
-  return res.json(playerToJSON(apiRouter.player))
-  */
   apiRouter.player
     .volumeUp()
     .then(context => res.json(playerToJSON(context)))
@@ -107,11 +84,6 @@ function volumeUp (req, res, next) {
 }
 
 function volumeDown (req, res, next) {
-  /*
-  apiRouter.player.volume -= 10
-
-  return res.json(playerToJSON(apiRouter.player))
-  */
   apiRouter.player
     .volumeDown()
     .then(context => res.json(playerToJSON(context)))
@@ -120,12 +92,7 @@ function volumeDown (req, res, next) {
 
 function setTime (req, res, next) {
   let time = +req.params.time
-  /*
-  apiRouter.player.time = time
-  let result = apiRouter.player
 
-  return res.json(playerToJSON(result))
-  */
   apiRouter.player
     .setTime(time)
     .then(context => res.json(playerToJSON(context)))
@@ -133,12 +100,10 @@ function setTime (req, res, next) {
 }
 
 function getTime (req, res, next) {
-  /*
-  let result = apiRouter.player
-//      .then(context => res.json(context))
-//      .catch(err => next(err))
-  return res.json(playerToJSON(result))
-  */
+  apiRouter.player
+    .getTime()
+    .then(context => res.json(playerToJSON(context)))
+    .catch(err => next(err))
 }
 
 
@@ -149,16 +114,6 @@ function setVideoTrack (req, res, next) {
     .setVideoTrack(id)
     .then(context => res.json(playerToJSON(context)))
     .catch(err => next(err))
-
-/*
-  let oldTrackIndex = apiRouter.player.tracks.video.findIndex(track => track.selected === true)
-  let newTrackIndex = apiRouter.player.tracks.video.findIndex(track => track.id === id)
-  if (oldTrackIndex === -1 || newTrackIndex === -1) return
-
-  apiRouter.player.tracks.video[oldTrackIndex].selected = false
-  apiRouter.player.tracks.video[newTrackIndex].selected = true
-  return res.json(playerToJSON(apiRouter.player))
-  */
 }
 
 function setAudioTrack (req, res, next) {
@@ -168,16 +123,6 @@ function setAudioTrack (req, res, next) {
     .setAudioTrack(id)
     .then(context => res.json(playerToJSON(context)))
     .catch(err => next(err))
-
-/*
-  let oldTrackIndex = apiRouter.player.tracks.audio.findIndex(track => track.selected === true)
-  let newTrackIndex = apiRouter.player.tracks.audio.findIndex(track => track.id === id)
-  if (oldTrackIndex === -1 || newTrackIndex === -1) return
-
-  apiRouter.player.tracks.audio[oldTrackIndex].selected = false
-  apiRouter.player.tracks.audio[newTrackIndex].selected = true
-  return res.json(playerToJSON(apiRouter.player))
-  */
 }
 
 function setSubtitleTrack (req, res, next) {
@@ -187,16 +132,6 @@ function setSubtitleTrack (req, res, next) {
     .setSubtitleTrack(id)
     .then(context => res.json(playerToJSON(context)))
     .catch(err => next(err))
-
-/*
-  let oldTrackIndex = apiRouter.player.tracks.subtitle.findIndex(track => track.selected === true)
-  let newTrackIndex = apiRouter.player.tracks.subtitle.findIndex(track => track.id === id)
-  if (oldTrackIndex === -1 || newTrackIndex === -1) return
-
-  apiRouter.player.tracks.subtitle[oldTrackIndex].selected = false
-  apiRouter.player.tracks.subtitle[newTrackIndex].selected = true
-  return res.json(playerToJSON(apiRouter.player))
-  */
 }
 
 
