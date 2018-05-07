@@ -32,6 +32,12 @@ const logger = new winston.Logger({
   exitOnError: true
 })
 
+logger.stream = {
+  write: function(message, encoding){
+    logger.verbose(message);
+  }
+}
+
 // ---------------------------------------------------------------------------
 
 module.exports = logger

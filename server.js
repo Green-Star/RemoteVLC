@@ -62,7 +62,7 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' }))
 app.use(methodOverride())
 
 /* Log requests */
-app.use(morgan('dev'))
+app.use(morgan('dev', { stream: logger.stream }))
 
 app.use('/', router)
 
