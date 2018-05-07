@@ -1,6 +1,7 @@
 const express = require('express')
 const apiRouter = express.Router()
 const path = require('path')
+const logger = require('./logger')
 
 apiRouter.player = {}
 
@@ -136,7 +137,7 @@ function setSubtitleTrack (req, res, next) {
 
 
 function todo (req, res, next) {
-  console.log('Not yet implemented')
+  logger.debug('Not yet implemented')
   return res.send('Not yet implemented').status(200).end()
 }
 

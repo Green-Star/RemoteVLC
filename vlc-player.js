@@ -1,5 +1,6 @@
 const child_process = require('child_process')
 const newTask = require('./task').newTask
+const logger = require('./logger')
 
 const player = {}
 
@@ -34,7 +35,7 @@ function sanitizeServerFeedback (bufferData) {
 }
 
 function handleServerFeedback (tasksToDo, data) {
-  console.log('=== Start handleServerFeedback ===')
+  logger.verbose('=== Start handleServerFeedback ===')
 
   let buffer = ''
   /* Bufferize the data and consume it whenever needed */
@@ -42,18 +43,18 @@ function handleServerFeedback (tasksToDo, data) {
     buffer += c
   }
 
-  console.log('Original data: [' + buffer + ']')
+  logger.debug('Original data: [' + buffer + ']')
   let sanitizedData = sanitizeServerFeedback(buffer)
-  console.log('Sanitized data: ['+ sanitizedData + ']')
+  logger.debug('Sanitized data: ['+ sanitizedData + ']')
   player.data += sanitizedData
 
   let pendingTasks = tasksToDo.slice()
   let pendingData = player.data
-  console.log('Tasks to do: ' + JSON.stringify(pendingTasks))
-  console.log('Data: ' + JSON.stringify(pendingData))
+  logger.debug('Tasks to do: ' + JSON.stringify(pendingTasks))
+  logger.debug('Data: ' + JSON.stringify(pendingData))
 
   for (let task of tasksToDo) {
-    console.log('Execute: ' + task.name)
+    logger.debug('Execute: ' + task.name)
 
     let end = player.methods[task.name](pendingData)
     if (end.result === false) break
@@ -69,14 +70,14 @@ function handleServerFeedback (tasksToDo, data) {
   player.tasks = pendingTasks
   player.data = pendingData
 
-  console.log('Pending tasks: ' + JSON.stringify(player.tasks))
-  console.log('Pending data: ' + JSON.stringify(player.data))
-  console.log('===  End  handleServerFeedback ===')
+  logger.verbose('Pending tasks: ' + JSON.stringify(player.tasks))
+  logger.verbose('Pending data: ' + JSON.stringify(player.data))
+  logger.verbose('===  End  handleServerFeedback ===')
 }
 
 function updateSeconds () {
   player.context.time++
-  console.log('Media time: ' + player.context.time)
+  logger.debug('Media time: ' + player.context.time)
 }
 
 function initContext () {
@@ -119,7 +120,7 @@ function parseTracks (data) {
     trackInfo.language = (tracks[3]) ? tracks[3] : tracks[4]
     trackInfo.selected = (tracks[5]) ? true : false
 
-    console.log(trackInfo)
+    logger.debug(trackInfo)
 
     parsedTracks.push(trackInfo)
   }
@@ -379,14 +380,14 @@ player.methods[METHODS.GET_TITLE] = function (data) {
     returnedResult = true
     returnedData = data.substr(pos + safeguard.length)
 
-    console.log('Title: ' + player.context.title)
+    logger.debug('Title: ' + player.context.title)
   }
 
   return { result: returnedResult, data: returnedData }
 }
 
 player.methods[METHODS.SET_TIME] = function (data) {
-  console.log('Time: ' + player.context.time)
+  logger.debug('Time: ' + player.context.time)
   return { result: true, data: data }
 }
 
@@ -404,7 +405,7 @@ player.methods[METHODS.GET_TIME] = function (data) {
     returnedResult = true
     returnedData = data.substr(pos + safeguard.length)
 
-    console.log('Current time: ' + player.context.time)
+    logger.debug('Current time: ' + player.context.time)
   }
 
   return { result: returnedResult, data: returnedData }
@@ -424,14 +425,14 @@ player.methods[METHODS.GET_LENGTH] = function (data) {
     returnedResult = true
     returnedData = data.substr(pos + safeguard.length)
 
-    console.log('Media length: ' + player.context.length)
+    logger.debug('Media length: ' + player.context.length)
   }
 
   return { result: returnedResult, data: returnedData }
 }
 
 player.methods[METHODS.SET_VOLUME] = function (data) {
-  console.log('Set Volume: ' + player.context.volume)
+  logger.debug('Set Volume: ' + player.context.volume)
   return { result: true, data: data }
 }
 
@@ -449,7 +450,7 @@ player.methods[METHODS.GET_VOLUME] = function (data) {
     returnedResult = true
     returnedData = data.substr(pos + safeguard.length)
 
-    console.log('Volume: ' + player.context.volume)
+    logger.debug('Volume: ' + player.context.volume)
   }
 
   return { result: returnedResult, data: returnedData }
@@ -468,14 +469,14 @@ player.methods[METHODS.MODIFY_VOLUME] = function (data) {
     returnedResult = true
     returnedData = data.substr(matching[0].length)
 
-    console.log('Volume: ' + player.context.volume)
+    logger.debug('Volume: ' + player.context.volume)
   }
 
   return { result: returnedResult, data: returnedData }
 }
 
 player.methods[METHODS.SET_VIDEO_TRACK] = function (data) {
-  console.log('Set Video track: ' + JSON.stringify(player.context.tracks.video))
+  logger.debug('Set Video track: ' + JSON.stringify(player.context.tracks.video))
   return { result: true, data: data }
 }
 
@@ -484,13 +485,13 @@ player.methods[METHODS.GET_VIDEO_TRACKS] = function (data) {
 
   player.context.tracks.video = result.tracks
 
-  console.log('Video tracks: ' + JSON.stringify(player.context.tracks.video))
+  logger.debug('Video tracks: ' + JSON.stringify(player.context.tracks.video))
 
   return { result: result.returnedResult, data: result.remainingData }
 }
 
 player.methods[METHODS.SET_AUDIO_TRACK] = function (data) {
-  console.log('Set Audio track: ' + JSON.stringify(player.context.tracks.audio))
+  logger.debug('Set Audio track: ' + JSON.stringify(player.context.tracks.audio))
   return { result: true, data: data }
 }
 
@@ -499,13 +500,13 @@ player.methods[METHODS.GET_AUDIO_TRACKS] = function (data) {
 
   player.context.tracks.audio = result.tracks
 
-  console.log('Audio tracks: ' + JSON.stringify(player.context.tracks.audio))
+  logger.debug('Audio tracks: ' + JSON.stringify(player.context.tracks.audio))
 
   return { result: result.returnedResult, data: result.remainingData }
 }
 
 player.methods[METHODS.SET_SUBTITLE_TRACK] = function (data) {
-  console.log('Set Subtitle track: ' + JSON.stringify(player.context.tracks.subtitle))
+  logger.debug('Set Subtitle track: ' + JSON.stringify(player.context.tracks.subtitle))
   return { result: true, data: data }
 }
 
@@ -514,7 +515,7 @@ player.methods[METHODS.GET_SUBTITLE_TRACKS] = function (data) {
 
   player.context.tracks.subtitle = result.tracks
 
-  console.log('Subtitles tracks: ' + JSON.stringify(player.context.tracks.subtitle))
+  logger.debug('Subtitles tracks: ' + JSON.stringify(player.context.tracks.subtitle))
 
   return { result: result.returnedResult, data: result.remainingData }
 }

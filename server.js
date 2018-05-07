@@ -3,17 +3,18 @@ const http = require('http')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
+const logger = require('./logger')
 
 if (!process.argv[2]) {
-  console.log('Error: Missing media filename to play')
-  console.log('Usage: ' + process.argv[0] + " " + process.argv[1] + " <media filename>")
+  logger.error('Missing media filename to play')
+  logger.info('Usage: ' + process.argv[0] + " " + process.argv[1] + " <media filename>")
   process.exit(1)
 }
 
-console.log('Starting Remote control for ' + process.argv[2])
+logger.info('Starting Remote control for ' + process.argv[2])
 
 /*** Start player control ***/
-console.log('Spawning VLC ...')
+logger.info('Spawning VLC ...')
 
 const player = require('./vlc-player')
 player.start('vlc', process.argv[2])
@@ -46,7 +47,7 @@ const player = playerTest
 */
 
 /*** Start WebUI control ***/
-console.log('Spawning web UI')
+logger.info('Spawning web UI')
 
 const app = express()
 const router = require('./router')
@@ -56,11 +57,16 @@ router.create(player)
 app.use(express.static(__dirname + '/client/dist'))
 
 app.use(bodyParser.urlencoded({extended:true}));// get information from html forms
-app.use(bodyParser.json());
-app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
-app.use(methodOverride());
+app.use(bodyParser.json())
+app.use(bodyParser.json({ type: 'application/vnd.api+json' }))
+app.use(methodOverride())
+
+/* Log requests */
+app.use(morgan('dev'))
 
 app.use('/', router)
 
 const server = http.createServer(app)
 server.listen(8080)
+
+logger.info('Server started')
