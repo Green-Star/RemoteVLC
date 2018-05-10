@@ -437,9 +437,9 @@ player.methods[METHODS.GET_VOLUME] = function (data) {
     returnedData = data.substr(pos + safeguard.length)
 
     console.log('Volume: ' + player.context.volume)
-
-    return { result: returnedResult, data: returnedData }
   }
+
+  return { result: returnedResult, data: returnedData }
 }
 
 player.methods[METHODS.MODIFY_VOLUME] = function (data) {
