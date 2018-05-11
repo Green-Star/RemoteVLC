@@ -7,12 +7,22 @@
   "engines": {
     "node": ">=4.x"
   },
+  "scripts": {
+    "build-ts": "tsc",
+    "start": "node dist/server"
+  },
   "dependencies": {
-    "express": "^4.15.4",
+    "express": "^4.16.3",
     "http": "0.0.0",
     "method-override": "^2.3.10",
     "mkdirp": "^0.5.1",
     "morgan": "^1.9.0",
     "winston": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.11.1",
+    "@types/mkdirp": "^0.5.2",
+    "@types/winston": "^2.3.9",
+    "typescript": "^2.8.3"
   }
 }
