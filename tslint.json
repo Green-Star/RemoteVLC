@@ -1,0 +1,11 @@
+{
+  "extends": "tslint-config-standard",
+  "rules": {
+    "no-inferrable-types": true,
+    "eofline": true,
+    "indent": ["spaces"],
+    "ter-indent": [true, 2],
+    "max-line-length": [true, 140],
+    "no-floating-promises": false
+  }
+}
