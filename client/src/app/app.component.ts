@@ -7,13 +7,9 @@ import { PlayerService } from './service'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'app';
-  //player = undefined
+  title = 'app'
 
   constructor(private playerService : PlayerService) {}
 
-  ngOnInit() {
-  	//this.player = this.playerService.init()
-  	//this.playerService.init().subscribe(data => this.player = data)
-  }
+  ngOnInit() {}
 }
