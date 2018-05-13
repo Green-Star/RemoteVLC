@@ -22,22 +22,21 @@ export class TimerComponent implements OnInit {
 
   private updateSeconds() {
     this.time++
-    console.log('updateSeconds: '+this.time)
   }
+
   startTimer() {
-    console.log('startTimer')
     this.timer = setInterval(() => this.updateSeconds(), 1000)
   }
+
   updateTimer(seconds: number) {
-    console.log('updateTimer with '+seconds+' seconds')
     this.time = seconds
   }
+
   getTimer(): number {
-    console.log('Timer value: ' + this.time)
     return this.time
   }
+
   stopTimer() {
-    console.log('stopTimer')
     clearInterval(this.timer)
   }
 }
