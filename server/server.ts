@@ -1,9 +1,9 @@
-const express = require('express')
+import express = require('express')
 import * as http from 'http'
-import * as morgan from 'morgan'
+import morgan = require('morgan')
 import * as bodyParser from 'body-parser'
-import * as methodOverride from 'method-override'
 import * as path from 'path'
+import methodOverride = require ('method-override')
 import { logger } from './logger'
 
 if (!process.argv[2]) {
