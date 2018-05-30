@@ -16,7 +16,6 @@
         }
     },
     "include": [
-        "./server/**/*",
-	"./server/*.js"
+        "./server/**/*"
     ]
 }
