@@ -1,0 +1,52 @@
+/* You can add global styles to this file, and also import other style files */
+html {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 16px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 20px;
+}
+
+@media all and (max-width: 700px) {
+	html {
+		font-size: 15px;
+		line-height: 24px;
+	}
+}
+
+body {
+    background-color: black;
+    color: lightgrey;
+    width: 100vw;
+    height: 100vh;
+}
+
+@media all and (min-width: 700px) {
+	body {
+		width: 50vw;
+	}
+}
+
+.main-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.component-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.data-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+	margin: 1rem 1rem 1rem 1rem;
+}
+
+.data-container strong {
+	font-weight: bold;
+	font-size: 20px;
+}

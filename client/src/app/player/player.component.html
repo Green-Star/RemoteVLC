@@ -1,0 +1,66 @@
+<div *ngIf="player" class="main-container">
+
+  <div class="data-container">
+    <h1>{{ player.title }}</h1>
+  </div>
+  <div class="component-container bordered" id="video-controls">
+    <legend>Video</legend>
+    <app-timer
+      [isPlaying]="player.isPlaying"
+      [time]="player.time"
+      [length]="player.length"></app-timer>
+
+    <div class="component-container">
+        <div class="data-container">
+          <a *ngIf="isPlaying()" (click)="pause()">Pause</a><a *ngIf="!isPlaying()" (click)="play()">Play</a>
+        </div>
+        <div class="data-container" id="time-controls">
+          <a (click)="addTime(-60)">-60</a>
+          <a (click)="addTime(-30)">-30</a>
+          <a (click)="addTime(-10)">-10</a>
+          <a (click)="addTime(+10)">+10</a>
+          <a (click)="addTime(+30)">+30</a>
+          <a (click)="addTime(+60)">+60</a>
+        </div>
+    </div>
+  </div>
+  <div class="component-container bordered" id="audio-controls">
+    <legend>Audio</legend>
+    <div class="data-container">
+      <a (click)="volumeDown()">-</a> <strong>{{ player.volume }}</strong> <a (click)="volumeUp()">+</a>
+    </div>
+    <div class="data-container">
+      <a (click)="setVolume(0)">Mute</a>
+      <a (click)="setVolume(100)">100</a>
+      <a (click)="setVolume(150)">150</a>
+      <a (click)="setVolume(200)">200</a>
+    </div>
+  </div>
+  <div class="component-container bordered" id="track-controls">
+    <legend>Tracks</legend>
+    <div class="data-container">
+    <span>Subtitles
+      <select [ngModel]="selectedSubtitleTrack" (ngModelChange)="setSelectedSubtitleTrack($event)">
+        <option *ngFor="let subtitleTrack of player.tracks.subtitle" [ngValue]="subtitleTrack">
+          {{ subtitleTrack | displayTrack }}
+        </option>
+      </select>
+    </span>
+    <span>Audio
+      <select [ngModel]="selectedAudioTrack" (ngModelChange)="setSelectedAudioTrack($event)">
+        <option *ngFor="let audioTrack of player.tracks.audio" [ngValue]="audioTrack">
+          {{ audioTrack | displayTrack }}
+        </option>
+      </select>
+    </span>
+    <span>Video
+      <select [ngModel]="selectedVideoTrack" (ngModelChange)="setSelectedVideoTrack($event)">
+        <option *ngFor="let videoTrack of player.tracks.video" [ngValue]="videoTrack">
+          {{ videoTrack | displayTrack }}
+        </option>
+      </select>
+    </span>
+    </div>
+  </div>
+
+</div>
