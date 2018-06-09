@@ -11,5 +11,5 @@ export interface PlayerData {
     audio: Track[];
     subtitle: Track[];
   };
-  timer: number;
+  timer: NodeJS.Timer;
 }

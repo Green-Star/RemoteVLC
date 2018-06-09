@@ -40,6 +40,4 @@ export interface PlayerMethods {
   getAudioTracks: () => Promise<PlayerData>;
   setSubtitleTrack: (trackId) => Promise<PlayerData>;
   getSubtitleTracks: () => Promise<PlayerData>;
-
-  test: () => void
 }
