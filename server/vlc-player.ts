@@ -41,16 +41,22 @@ export class VLCPlayer implements PlayerMethods {
   private data: string
   private internalMethods: { (data: string): MethodResult } []
   private vlcProcess: child_process.ChildProcess
+  private filename: string
 
   constructor(filename: string) {
-    this.setInternalMethods()
+    this.tasks = []
+    this.data = ''
+    this.internalMethods = []
+    this.vlcProcess = undefined
+    this.filename = filename
     this.initContext()
+    this.setInternalMethods()
   }
 
   public start (playerName: string, filename: string): void {
     /* Spawn VLC process */
     this.vlcProcess = child_process.spawn('vlc',
-              [ filename, '--fullscreen', '--play-and-exit', '-I rc' ])
+              [ this.filename, '--fullscreen', '--play-and-exit', '-I rc' ])
 
     /* Record player's stdout callback function */
     this.vlcProcess.stdout.setEncoding('utf8')
@@ -59,10 +65,10 @@ export class VLCPlayer implements PlayerMethods {
     this.tasks.push(new Task(METHODS.INIT))
 
     /* Start media in pause mode */
-    setTimeout(this.pause, 300)
+    setTimeout(() => this.pause(), 300)
 
     /* Get media informations */
-    setTimeout(this.getMediaInformations, 1000)
+    setTimeout(() => this.getMediaInformations(), 1000)
   }
 
   public getMediaInformations (): Promise<PlayerData[]> {
@@ -288,17 +294,20 @@ export class VLCPlayer implements PlayerMethods {
   }
 
   private initContext (): void {
-    this.context.title = ''
-    this.context.isPlaying = true
-    this.context.volume = 0
-    this.context.time = 0
-    this.context.length = 0
-
-    this.context.tracks.video = []
-    this.context.tracks.audio = []
-    this.context.tracks.subtitle = []
-
-    this.context.timer = setInterval(this.updateSeconds, 1000)
+    this.context = {
+      title: '',
+      isPlaying: true,
+      volume: 0,
+      time: 0,
+      length: 0,
+      tracks: {
+        video: [],
+        audio: [],
+        subtitle: []
+      },
+      timer: undefined
+    }
+    this.context.timer = setInterval(() => (this.updateSeconds()), 1000)
   }
 
   private parseTracks (data: string): ParseTracksResult {
@@ -321,6 +330,7 @@ export class VLCPlayer implements PlayerMethods {
     let tracks: RegExpMatchArray
     while (tracks = subRegex.exec(tracksData)) {
       let trackInfo: Track
+      trackInfo = { id: undefined, title: undefined, language: undefined, selected: undefined }
       trackInfo.id = +tracks[1]
       trackInfo.title = tracks[2]
       trackInfo.language = (tracks[3]) ? tracks[3] : tracks[4]
@@ -347,208 +357,211 @@ export class VLCPlayer implements PlayerMethods {
   }
 
   private setInternalMethods (): void {
-    this.internalMethods[METHODS.INIT] = internalInit
-    this.internalMethods[METHODS.PAUSE] = internalPause
-    this.internalMethods[METHODS.GET_TITLE] = internalGetTitle
-    this.internalMethods[METHODS.SET_TIME] = internalSetTitle
-    this.internalMethods[METHODS.GET_TIME] = internalGetTime
-    this.internalMethods[METHODS.GET_LENGTH] = internalGetLength
-    this.internalMethods[METHODS.SET_VOLUME] = internalSetVolume
-    this.internalMethods[METHODS.GET_VOLUME] = internalGetVolume
-    this.internalMethods[METHODS.MODIFY_VOLUME] = internalModifyVolume
-    this.internalMethods[METHODS.SET_VIDEO_TRACK] = internalSetVideoTrack
-    this.internalMethods[METHODS.GET_VIDEO_TRACKS] = internalGetVideoTracks
-    this.internalMethods[METHODS.SET_AUDIO_TRACK] = internalSetAudioTrack
-    this.internalMethods[METHODS.GET_AUDIO_TRACKS] = internalGetAudioTracks
-    this.internalMethods[METHODS.SET_SUBTITLE_TRACK] = internalSetSubtitleTrack
-    this.internalMethods[METHODS.GET_SUBTITLE_TRACKS] = internalGetSubtitleTracks
+    /* We'll use Instance Functions here to preserve this binding 
+      (see: https://github.com/Microsoft/TypeScript/wiki/'this'-in-TypeScript)
+    */
+    this.internalMethods[METHODS.INIT] = (data: string) => this.internalInit(data)
+    this.internalMethods[METHODS.PAUSE] = (data: string) => this.internalPause(data)
+    this.internalMethods[METHODS.GET_TITLE] = (data: string) => this.internalGetTitle(data)
+    this.internalMethods[METHODS.SET_TIME] = (data: string) => this.internalSetTitle(data)
+    this.internalMethods[METHODS.GET_TIME] = (data: string) => this.internalGetTime(data)
+    this.internalMethods[METHODS.GET_LENGTH] = (data: string) => this.internalGetLength(data)
+    this.internalMethods[METHODS.SET_VOLUME] = (data: string) => this.internalSetVolume(data)
+    this.internalMethods[METHODS.GET_VOLUME] = (data: string) => this.internalGetVolume(data)
+    this.internalMethods[METHODS.MODIFY_VOLUME] = (data: string) => this.internalModifyVolume(data)
+    this.internalMethods[METHODS.SET_VIDEO_TRACK] = (data: string) => this.internalSetVideoTrack(data)
+    this.internalMethods[METHODS.GET_VIDEO_TRACKS] = (data: string) => this.internalGetVideoTracks(data)
+    this.internalMethods[METHODS.SET_AUDIO_TRACK] = (data: string) => this.internalSetAudioTrack(data)
+    this.internalMethods[METHODS.GET_AUDIO_TRACKS] = (data: string) => this.internalGetAudioTracks(data)
+    this.internalMethods[METHODS.SET_SUBTITLE_TRACK] = (data: string) => this.internalSetSubtitleTrack(data)
+    this.internalMethods[METHODS.GET_SUBTITLE_TRACKS] = (data: string) => this.internalGetSubtitleTracks(data)
   }
 
-}
+  /*** --------------------------------------------------- ***
 
-/*** --------------------------------------------------- ***
+                     INTERNAL METHODS
 
-                   INTERNAL METHODS
+  *** --------------------------------------------------- ***/
+  private internalInit (data: string): MethodResult {
+    let safeguard = "Command Line Interface initialized. Type `help' for help.\r\n"
 
-*** --------------------------------------------------- ***/
-function internalInit (data: string): MethodResult {
-  let safeguard = "Command Line Interface initialized. Type `help' for help.\r\n"
+    let returnedResult = false
+    let returnedData = data
 
-  let returnedResult = false
-  let returnedData = data
+    let pos = data.indexOf(safeguard)
+    if (pos > -1) {
+      returnedResult = true
+      returnedData = data.substr(pos + safeguard.length)
+    }
 
-  let pos = data.indexOf(safeguard)
-  if (pos > -1) {
-    returnedResult = true
-    returnedData = data.substr(pos + safeguard.length)
+    return { result: returnedResult, data: returnedData }
   }
 
-  return { result: returnedResult, data: returnedData }
-}
+  private internalPause (data: string): MethodResult {
+    let returnedData = data
 
-function internalPause (data: string): MethodResult {
-  let returnedData = data
+    this.context.isPlaying = !this.context.isPlaying
 
-  this.context.isPlaying = !this.context.isPlaying
+    if (this.context.isPlaying === true) {
+      this.context.timer = setInterval(() => this.updateSeconds(), 1000)
+    } else {
+      clearInterval(this.context.timer)
+    }
 
-  if (this.context.isPlaying === true) {
-    this.context.timer = setInterval(this.updateSeconds, 1000)
-  } else {
-    clearInterval(this.context.timer)
+    return { result: true, data: returnedData }
   }
 
-  return { result: true, data: returnedData }
-}
+  private internalGetTitle (data: string) {
+    let safeguard = "\r\n"
 
-function internalGetTitle (data: string) {
-  let safeguard = "\r\n"
+    let returnedResult = false
+    let returnedData = data
 
-  let returnedResult = false
-  let returnedData = data
+    let pos = data.indexOf(safeguard)
+    if (pos > -1) {
+      this.context.title = data.substr(0, pos)
 
-  let pos = data.indexOf(safeguard)
-  if (pos > -1) {
-    this.context.title = data.substr(0, pos)
+      returnedResult = true
+      returnedData = data.substr(pos + safeguard.length)
 
-    returnedResult = true
-    returnedData = data.substr(pos + safeguard.length)
+      logger.debug('Title: ' + this.context.title)
+    }
 
-    logger.debug('Title: ' + this.context.title)
+    return { result: returnedResult, data: returnedData }
   }
 
-  return { result: returnedResult, data: returnedData }
-}
-
-function internalSetTitle (data: string) {
-  logger.debug('Time: ' + this.context.time)
-  return { result: true, data: data }
-}
-
-function internalGetTime (data: string) {
-  let safeguard = "\r\n"
-
-  let returnedResult = false
-  let returnedData = data
-
-  let pos = data.indexOf(safeguard)
-  if (pos > -1) {
-    let time = data.substr(0, pos)
-    this.context.time = +time
-
-    returnedResult = true
-    returnedData = data.substr(pos + safeguard.length)
-
-    logger.debug('Current time: ' + this.context.time)
+  private internalSetTitle (data: string) {
+    logger.debug('Time: ' + this.context.time)
+    return { result: true, data: data }
   }
 
-  return { result: returnedResult, data: returnedData }
-}
+  private internalGetTime (data: string) {
+    let safeguard = "\r\n"
 
-function internalGetLength (data: string) {
-  let safeguard = "\r\n"
+    let returnedResult = false
+    let returnedData = data
 
-  let returnedResult = false
-  let returnedData = data
+    let pos = data.indexOf(safeguard)
+    if (pos > -1) {
+      let time = data.substr(0, pos)
+      this.context.time = +time
 
-  let pos = data.indexOf(safeguard)
-  if (pos > -1) {
-    let length = data.substr(0, pos)
-    this.context.length = +length
+      returnedResult = true
+      returnedData = data.substr(pos + safeguard.length)
 
-    returnedResult = true
-    returnedData = data.substr(pos + safeguard.length)
+      logger.debug('Current time: ' + this.context.time)
+    }
 
-    logger.debug('Media length: ' + this.context.length)
+    return { result: returnedResult, data: returnedData }
   }
 
-  return { result: returnedResult, data: returnedData }
-}
+  private internalGetLength (data: string) {
+    let safeguard = "\r\n"
 
-function internalSetVolume (data: string) {
-  logger.debug('Set Volume: ' + this.context.volume)
-  return { result: true, data: data }
-}
+    let returnedResult = false
+    let returnedData = data
 
-function internalGetVolume (data: string) {
-  let safeguard = "\r\n"
+    let pos = data.indexOf(safeguard)
+    if (pos > -1) {
+      let length = data.substr(0, pos)
+      this.context.length = +length
 
-  let returnedResult = false
-  let returnedData = data
+      returnedResult = true
+      returnedData = data.substr(pos + safeguard.length)
 
-  let pos = data.indexOf(safeguard)
-  if (pos > -1) {
-    let volume = data.substr(0, pos)
-    this.context.volume = +volume
+      logger.debug('Media length: ' + this.context.length)
+    }
 
-    returnedResult = true
-    returnedData = data.substr(pos + safeguard.length)
-
-    logger.debug('Volume: ' + this.context.volume)
+    return { result: returnedResult, data: returnedData }
   }
 
-  return { result: returnedResult, data: returnedData }
-}
-
-function internalModifyVolume (data: string) {
-  let returnedResult = false
-  let returnedData = data
-
-  let regexp = new RegExp(/^\( audio volume: (\d+) \)\r\n/)
-  let matching = data.match(regexp)
-
-  if (matching && matching[0] && matching[1]) {
-    this.context.volume = +matching[1]
-
-    returnedResult = true
-    returnedData = data.substr(matching[0].length)
-
-    logger.debug('Volume: ' + this.context.volume)
+  private internalSetVolume (data: string) {
+    logger.debug('Set Volume: ' + this.context.volume)
+    return { result: true, data: data }
   }
 
-  return { result: returnedResult, data: returnedData }
-}
+  private internalGetVolume (data: string) {
+    let safeguard = "\r\n"
 
-function internalSetVideoTrack (data: string) {
-  logger.debug('Set Video track: ' + JSON.stringify(this.context.tracks.video))
-  return { result: true, data: data }
-}
+    let returnedResult = false
+    let returnedData = data
 
-function internalGetVideoTracks (data: string) {
-  let result: ParseTracksResult = this.parseTracks(data)
+    let pos = data.indexOf(safeguard)
+    if (pos > -1) {
+      let volume = data.substr(0, pos)
+      this.context.volume = +volume
 
-  this.context.tracks.video = result.tracks
+      returnedResult = true
+      returnedData = data.substr(pos + safeguard.length)
 
-  logger.debug('Video tracks: ' + JSON.stringify(this.context.tracks.video))
+      logger.debug('Volume: ' + this.context.volume)
+    }
 
-  return { result: result.returnedResult, data: result.remainingData }
-}
+    return { result: returnedResult, data: returnedData }
+  }
 
-function internalSetAudioTrack (data: string) {
-  logger.debug('Set Audio track: ' + JSON.stringify(this.context.tracks.audio))
-  return { result: true, data: data }
-}
+  private internalModifyVolume (data: string) {
+    let returnedResult = false
+    let returnedData = data
 
-function internalGetAudioTracks (data: string) {
-  let result: ParseTracksResult = this.parseTracks(data)
+    let regexp = new RegExp(/^\( audio volume: (\d+) \)\r\n/)
+    let matching = data.match(regexp)
 
-  this.context.tracks.audio = result.tracks
+    if (matching && matching[0] && matching[1]) {
+      this.context.volume = +matching[1]
 
-  logger.debug('Audio tracks: ' + JSON.stringify(this.context.tracks.audio))
+      returnedResult = true
+      returnedData = data.substr(matching[0].length)
 
-  return { result: result.returnedResult, data: result.remainingData }
-}
+      logger.debug('Volume: ' + this.context.volume)
+    }
 
-function internalSetSubtitleTrack (data: string) {
-  logger.debug('Set Subtitle track: ' + JSON.stringify(this.context.tracks.subtitle))
-  return { result: true, data: data }
-}
+    return { result: returnedResult, data: returnedData }
+  }
 
-function internalGetSubtitleTracks (data: string) {
-  let result: ParseTracksResult = this.parseTracks(data)
+  private internalSetVideoTrack (data: string) {
+    logger.debug('Set Video track: ' + JSON.stringify(this.context.tracks.video))
+    return { result: true, data: data }
+  }
 
-  this.context.tracks.subtitle = result.tracks
+  private internalGetVideoTracks (data: string) {
+    let result: ParseTracksResult = this.parseTracks(data)
 
-  logger.debug('Subtitles tracks: ' + JSON.stringify(this.context.tracks.subtitle))
+    this.context.tracks.video = result.tracks
 
-  return { result: result.returnedResult, data: result.remainingData }
+    logger.debug('Video tracks: ' + JSON.stringify(this.context.tracks.video))
+
+    return { result: result.returnedResult, data: result.remainingData }
+  }
+
+  private internalSetAudioTrack (data: string) {
+    logger.debug('Set Audio track: ' + JSON.stringify(this.context.tracks.audio))
+    return { result: true, data: data }
+  }
+
+  private internalGetAudioTracks (data: string) {
+    let result: ParseTracksResult = this.parseTracks(data)
+
+    this.context.tracks.audio = result.tracks
+
+    logger.debug('Audio tracks: ' + JSON.stringify(this.context.tracks.audio))
+
+    return { result: result.returnedResult, data: result.remainingData }
+  }
+
+  private internalSetSubtitleTrack (data: string) {
+    logger.debug('Set Subtitle track: ' + JSON.stringify(this.context.tracks.subtitle))
+    return { result: true, data: data }
+  }
+
+  private internalGetSubtitleTracks (data: string) {
+    let result: ParseTracksResult = this.parseTracks(data)
+
+    this.context.tracks.subtitle = result.tracks
+
+    logger.debug('Subtitles tracks: ' + JSON.stringify(this.context.tracks.subtitle))
+
+    return { result: result.returnedResult, data: result.remainingData }
+  }
+
 }

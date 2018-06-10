@@ -5,6 +5,7 @@ import * as bodyParser from 'body-parser'
 import * as path from 'path'
 import methodOverride = require ('method-override')
 import { logger } from './logger'
+import { VLCPlayer } from './vlc-player'
 
 if (!process.argv[2]) {
   logger.error('Missing media filename to play')
@@ -17,7 +18,7 @@ logger.info('Starting Remote control for ' + process.argv[2])
 /*** Start player control ***/
 logger.info('Spawning VLC ...')
 
-const player = require('./vlc-player')
+let player = new VLCPlayer(process.argv[2])
 player.start('vlc', process.argv[2])
 
 // Use a mock player when building WebUI
@@ -63,7 +64,7 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' }))
 app.use(methodOverride())
 
 /* Log requests */
-app.use(morgan('dev', { stream: logger.stream }))
+//app.use(morgan('dev', { stream: logger.stream }))
 
 app.use('/', router.apiRouter)
 
