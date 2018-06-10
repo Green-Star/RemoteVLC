@@ -1,7 +1,7 @@
 import { PlayerData } from './player-data.model'
 
 export interface PlayerMethods {
-  start: (playerName: string, filename: string) => void;
+  start: () => void;
   getMediaInformations: () => Promise<PlayerData[]>;
   pause: () => Promise<PlayerData>;
   play: () => Promise<PlayerData>;

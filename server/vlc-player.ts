@@ -2,6 +2,7 @@ import * as child_process from 'child_process'
 
 import { Track } from './track.model'
 import { Context } from './context'
+import { Player } from './player'
 import { PlayerData } from './player-data.model'
 import { PlayerMethods } from './player-methods.model'
 import { PlayerFactory } from './player-factory'
@@ -37,25 +38,24 @@ const METHODS = {
   GET_SUBTITLE_TRACKS: 'getSubtitleTracks'
 }
 
-export class VLCPlayer implements PlayerMethods {
+export class VLCPlayer extends Player {
   private context: Context
   private tasks: Task[]
   private data: string
   private internalMethods: { (data: string): MethodResult } []
   private vlcProcess: child_process.ChildProcess
-  private filename: string
 
-  constructor(filename: string) {
+  constructor (filename: string) {
+    super(filename)
     this.tasks = []
     this.data = ''
     this.internalMethods = []
     this.vlcProcess = undefined
-    this.filename = filename
     this.setInternalMethods()
     this.context = new Context()
   }
 
-  public start (playerName: string, filename: string): void {
+  public start (): void {
     /* Spawn VLC process */
     this.vlcProcess = child_process.spawn('vlc',
               [ this.filename, '--fullscreen', '--play-and-exit', '-I rc' ])
