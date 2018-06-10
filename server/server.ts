@@ -6,6 +6,7 @@ import * as path from 'path'
 import methodOverride = require ('method-override')
 import { logger } from './logger'
 import { VLCPlayer } from './vlc-player'
+import { PlayerFactory } from './player-factory'
 
 if (!process.argv[2]) {
   logger.error('Missing media filename to play')
@@ -16,10 +17,10 @@ if (!process.argv[2]) {
 logger.info('Starting Remote control for ' + process.argv[2])
 
 /*** Start player control ***/
-logger.info('Spawning VLC ...')
+logger.info('Spawning player ...')
 
-let player = new VLCPlayer(process.argv[2])
-player.start('vlc', process.argv[2])
+let player = PlayerFactory.getPlayer('vlc', process.argv[2])
+player.start()
 
 // Use a mock player when building WebUI
 /*

@@ -4,6 +4,7 @@ import { Track } from './track.model'
 import { Context } from './context'
 import { PlayerData } from './player-data.model'
 import { PlayerMethods } from './player-methods.model'
+import { PlayerFactory } from './player-factory'
 import { Task } from './task'
 import { logger } from './logger'
 

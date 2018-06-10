@@ -142,6 +142,6 @@ function setSubtitleTrack (req: express.Request, res: express.Response, next: ex
 
 
 function todo (req: express.Request, res: express.Response, next: express.NextFunction) {
-//  logger.debug('Not yet implemented')
+  logger.debug('Not yet implemented')
   return res.send('Not yet implemented').status(200).end()
 }
