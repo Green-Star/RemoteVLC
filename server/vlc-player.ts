@@ -1,6 +1,7 @@
 import * as child_process from 'child_process'
 
 import { Track } from './track.model'
+import { Context } from './context'
 import { PlayerData } from './player-data.model'
 import { PlayerMethods } from './player-methods.model'
 import { Task } from './task'
@@ -36,7 +37,7 @@ const METHODS = {
 }
 
 export class VLCPlayer implements PlayerMethods {
-  private context: PlayerData
+  private context: Context
   private tasks: Task[]
   private data: string
   private internalMethods: { (data: string): MethodResult } []
@@ -49,14 +50,17 @@ export class VLCPlayer implements PlayerMethods {
     this.internalMethods = []
     this.vlcProcess = undefined
     this.filename = filename
-    this.initContext()
     this.setInternalMethods()
+    this.context = new Context()
   }
 
   public start (playerName: string, filename: string): void {
     /* Spawn VLC process */
     this.vlcProcess = child_process.spawn('vlc',
               [ this.filename, '--fullscreen', '--play-and-exit', '-I rc' ])
+    
+    /* VLC spawns in playing mode by default */
+    this.context.startPlaying()
 
     /* Record player's stdout callback function */
     this.vlcProcess.stdout.setEncoding('utf8')
@@ -101,7 +105,7 @@ export class VLCPlayer implements PlayerMethods {
 
     this.tasks.push(task)
     this.vlcProcess.stdin.write('seek ' + time + '\r\n')
-    this.context.time = time
+    this.context.setTime(time)
 
     return task
   }
@@ -138,7 +142,7 @@ export class VLCPlayer implements PlayerMethods {
 
     this.tasks.push(task)
     this.vlcProcess.stdin.write('volume ' + volume + '\r\n')
-    this.context.volume = volume
+    this.context.setVolume(volume)
 
     return task
   }
@@ -175,14 +179,13 @@ export class VLCPlayer implements PlayerMethods {
   }
 
   public setVideoTrack (trackId: number): Promise<PlayerData> {
-    let newTrackIndex = this.checkNewTrackId(this.context.tracks.video, trackId)
-    if (newTrackIndex === -1) return
+    let updated = this.context.setSelectedVideoTrack(trackId)
+    if (updated === false) return
 
     let task = new Task(METHODS.SET_VIDEO_TRACK)
 
     this.tasks.push(task)
     this.vlcProcess.stdin.write('vtrack ' + trackId + '\r\n')
-    this.updateTrack(this.context.tracks.video, newTrackIndex)
 
     return task
   }
@@ -197,14 +200,13 @@ export class VLCPlayer implements PlayerMethods {
   }
 
   public setAudioTrack (trackId: number): Promise<PlayerData> {
-    let newTrackIndex = this.checkNewTrackId(this.context.tracks.audio, trackId)
-    if (newTrackIndex === -1) return
+    let updated = this.context.setSelectedAudioTrack(trackId)
+    if (updated === false) return
 
     let task = new Task(METHODS.SET_AUDIO_TRACK)
 
     this.tasks.push(task)
     this.vlcProcess.stdin.write('atrack ' + trackId + '\r\n')
-    this.updateTrack(this.context.tracks.audio, newTrackIndex)
 
     return task
   }
@@ -219,15 +221,13 @@ export class VLCPlayer implements PlayerMethods {
   }
 
   public setSubtitleTrack (trackId: number): Promise<PlayerData> {
-    /* If the new trackId is not valid, stop here */
-    let newTrackIndex = this.checkNewTrackId(this.context.tracks.subtitle, trackId)
-    if (newTrackIndex === -1) return
+    let updated = this.context.setSelectedSubtitleTrack(trackId)
+    if (updated === false) return
 
     let task = new Task(METHODS.SET_SUBTITLE_TRACK)
 
     this.tasks.push(task)
     this.vlcProcess.stdin.write('strack ' + trackId + '\r\n')
-    this.updateTrack(this.context.tracks.subtitle, newTrackIndex)
 
     return task
   }
@@ -277,7 +277,7 @@ export class VLCPlayer implements PlayerMethods {
       /* And it has consume the relevant data, so we remove them too */
       pendingData = end.data
       /* And we resolve the promise */
-      task.resolve(this.context)
+      task.resolve(this.context.toFormattedPlayerData())
     }
 
     this.tasks = pendingTasks
@@ -286,28 +286,6 @@ export class VLCPlayer implements PlayerMethods {
     logger.verbose('Pending tasks: ' + JSON.stringify(this.tasks))
     logger.verbose('Pending data: ' + JSON.stringify(this.data))
     logger.verbose('===  End  handleServerFeedback ===')
-  }
-
-  private updateSeconds (): void {
-    this.context.time++
-    logger.debug('Media time: ' + this.context.time)
-  }
-
-  private initContext (): void {
-    this.context = {
-      title: '',
-      isPlaying: true,
-      volume: 0,
-      time: 0,
-      length: 0,
-      tracks: {
-        video: [],
-        audio: [],
-        subtitle: []
-      },
-      timer: undefined
-    }
-    this.context.timer = setInterval(() => (this.updateSeconds()), 1000)
   }
 
   private parseTracks (data: string): ParseTracksResult {
@@ -328,7 +306,7 @@ export class VLCPlayer implements PlayerMethods {
 
     let subRegex = new RegExp(/\|\s(-?\d+)\s-(?:\s(.*)\s-)?\s(?:\[(.+)\]|([^*\r\n]+))(?:\s(\*?))?\r\n/, 'g')
     let tracks: RegExpMatchArray
-    while (tracks = subRegex.exec(tracksData)) {
+    while ((tracks = subRegex.exec(tracksData))) {
       let trackInfo: Track
       trackInfo = { id: undefined, title: undefined, language: undefined, selected: undefined }
       trackInfo.id = +tracks[1]
@@ -344,18 +322,6 @@ export class VLCPlayer implements PlayerMethods {
     return { returnedResult: result, remainingData: remainingData, tracks: parsedTracks }
   }
 
-  private checkNewTrackId (tracks: Track[], trackId: number): number {
-    return tracks.findIndex(track => track.id === trackId)
-  }
-
-  private updateTrack (tracks: Track[], newTrackIndex: number): void {
-    let oldTrackIndex = tracks.findIndex(track => track.selected === true)
-    if (oldTrackIndex === -1) return
-
-    tracks[oldTrackIndex].selected = false
-    tracks[newTrackIndex].selected = true
-  }
-
   private setInternalMethods (): void {
     /* We'll use Instance Functions here to preserve this binding 
       (see: https://github.com/Microsoft/TypeScript/wiki/'this'-in-TypeScript)
@@ -363,7 +329,7 @@ export class VLCPlayer implements PlayerMethods {
     this.internalMethods[METHODS.INIT] = (data: string) => this.internalInit(data)
     this.internalMethods[METHODS.PAUSE] = (data: string) => this.internalPause(data)
     this.internalMethods[METHODS.GET_TITLE] = (data: string) => this.internalGetTitle(data)
-    this.internalMethods[METHODS.SET_TIME] = (data: string) => this.internalSetTitle(data)
+    this.internalMethods[METHODS.SET_TIME] = (data: string) => this.internalSetTime(data)
     this.internalMethods[METHODS.GET_TIME] = (data: string) => this.internalGetTime(data)
     this.internalMethods[METHODS.GET_LENGTH] = (data: string) => this.internalGetLength(data)
     this.internalMethods[METHODS.SET_VOLUME] = (data: string) => this.internalSetVolume(data)
@@ -400,12 +366,10 @@ export class VLCPlayer implements PlayerMethods {
   private internalPause (data: string): MethodResult {
     let returnedData = data
 
-    this.context.isPlaying = !this.context.isPlaying
-
-    if (this.context.isPlaying === true) {
-      this.context.timer = setInterval(() => this.updateSeconds(), 1000)
+    if (this.context.isPlaying()) {
+      this.context.stopPlaying()
     } else {
-      clearInterval(this.context.timer)
+      this.context.startPlaying()
     }
 
     return { result: true, data: returnedData }
@@ -419,19 +383,20 @@ export class VLCPlayer implements PlayerMethods {
 
     let pos = data.indexOf(safeguard)
     if (pos > -1) {
-      this.context.title = data.substr(0, pos)
+      let title = data.substr(0, pos)
+      this.context.setTitle(title)
 
       returnedResult = true
       returnedData = data.substr(pos + safeguard.length)
 
-      logger.debug('Title: ' + this.context.title)
+      logger.debug('Title: ' + this.context.getTitle())
     }
 
     return { result: returnedResult, data: returnedData }
   }
 
-  private internalSetTitle (data: string) {
-    logger.debug('Time: ' + this.context.time)
+  private internalSetTime (data: string) {
+    logger.debug('Time: ' + this.context.getTime())
     return { result: true, data: data }
   }
 
@@ -443,13 +408,13 @@ export class VLCPlayer implements PlayerMethods {
 
     let pos = data.indexOf(safeguard)
     if (pos > -1) {
-      let time = data.substr(0, pos)
-      this.context.time = +time
+      let time = +(data.substr(0, pos))
+      this.context.setTime(time)
 
       returnedResult = true
       returnedData = data.substr(pos + safeguard.length)
 
-      logger.debug('Current time: ' + this.context.time)
+      logger.debug('Current time: ' + this.context.getTime())
     }
 
     return { result: returnedResult, data: returnedData }
@@ -463,20 +428,20 @@ export class VLCPlayer implements PlayerMethods {
 
     let pos = data.indexOf(safeguard)
     if (pos > -1) {
-      let length = data.substr(0, pos)
-      this.context.length = +length
+      let length = +(data.substr(0, pos))
+      this.context.setLength(length)
 
       returnedResult = true
       returnedData = data.substr(pos + safeguard.length)
 
-      logger.debug('Media length: ' + this.context.length)
+      logger.debug('Media length: ' + this.context.getLength())
     }
 
     return { result: returnedResult, data: returnedData }
   }
 
   private internalSetVolume (data: string) {
-    logger.debug('Set Volume: ' + this.context.volume)
+    logger.debug('Set Volume: ' + this.context.getVolume())
     return { result: true, data: data }
   }
 
@@ -488,13 +453,13 @@ export class VLCPlayer implements PlayerMethods {
 
     let pos = data.indexOf(safeguard)
     if (pos > -1) {
-      let volume = data.substr(0, pos)
-      this.context.volume = +volume
+      let volume = +(data.substr(0, pos))
+      this.context.setVolume(volume)
 
       returnedResult = true
       returnedData = data.substr(pos + safeguard.length)
 
-      logger.debug('Volume: ' + this.context.volume)
+      logger.debug('Volume: ' + this.context.getVolume())
     }
 
     return { result: returnedResult, data: returnedData }
@@ -508,58 +473,59 @@ export class VLCPlayer implements PlayerMethods {
     let matching = data.match(regexp)
 
     if (matching && matching[0] && matching[1]) {
-      this.context.volume = +matching[1]
+      let volume = +matching[1]
+      this.context.setVolume(volume)
 
       returnedResult = true
       returnedData = data.substr(matching[0].length)
 
-      logger.debug('Volume: ' + this.context.volume)
+      logger.debug('Volume: ' + this.context.getVolume())
     }
 
     return { result: returnedResult, data: returnedData }
   }
 
   private internalSetVideoTrack (data: string) {
-    logger.debug('Set Video track: ' + JSON.stringify(this.context.tracks.video))
+    logger.debug('Set Video track: ' + JSON.stringify(this.context.getVideoTracks()))
     return { result: true, data: data }
   }
 
   private internalGetVideoTracks (data: string) {
     let result: ParseTracksResult = this.parseTracks(data)
 
-    this.context.tracks.video = result.tracks
+    this.context.setVideoTracks(result.tracks)
 
-    logger.debug('Video tracks: ' + JSON.stringify(this.context.tracks.video))
+    logger.debug('Video tracks: ' + JSON.stringify(this.context.getVideoTracks()))
 
     return { result: result.returnedResult, data: result.remainingData }
   }
 
   private internalSetAudioTrack (data: string) {
-    logger.debug('Set Audio track: ' + JSON.stringify(this.context.tracks.audio))
+    logger.debug('Set Audio track: ' + JSON.stringify(this.context.getAudioTracks()))
     return { result: true, data: data }
   }
 
   private internalGetAudioTracks (data: string) {
     let result: ParseTracksResult = this.parseTracks(data)
 
-    this.context.tracks.audio = result.tracks
+    this.context.setAudioTracks(result.tracks)
 
-    logger.debug('Audio tracks: ' + JSON.stringify(this.context.tracks.audio))
+    logger.debug('Audio tracks: ' + JSON.stringify(this.context.getAudioTracks()))
 
     return { result: result.returnedResult, data: result.remainingData }
   }
 
   private internalSetSubtitleTrack (data: string) {
-    logger.debug('Set Subtitle track: ' + JSON.stringify(this.context.tracks.subtitle))
+    logger.debug('Set Subtitle track: ' + JSON.stringify(this.context.getSubtitleTracks()))
     return { result: true, data: data }
   }
 
   private internalGetSubtitleTracks (data: string) {
     let result: ParseTracksResult = this.parseTracks(data)
 
-    this.context.tracks.subtitle = result.tracks
+    this.context.setSubtitleTracks(result.tracks)
 
-    logger.debug('Subtitles tracks: ' + JSON.stringify(this.context.tracks.subtitle))
+    logger.debug('Subtitles tracks: ' + JSON.stringify(this.context.getSubtitleTracks()))
 
     return { result: result.returnedResult, data: result.remainingData }
   }

@@ -6,11 +6,12 @@ import { logger } from './logger'
 
 export class Context {
   private playerData: PlayerData
+  private timer: NodeJS.Timer;
 
   constructor () {
     this.playerData = {
       title: '',
-      isPlaying: true,
+      isPlaying: false,
       volume: 0,
       time: 0,
       length: 0,
@@ -18,9 +19,9 @@ export class Context {
         video: [],
         audio: [],
         subtitle: []
-      },
-      timer: undefined
+      }
     }
+    this.timer = undefined
   }
 
   public getTitle (): string {
@@ -100,14 +101,24 @@ export class Context {
   }
 
   public startTimer (): void {
-    this.playerData.timer = setInterval(() => this.updateSeconds(), 1000)
+    this.timer = setInterval(() => this.updateSeconds(), 1000)
   }
 
   public stopTimer (): void {
-    clearInterval(this.playerData.timer)
+    clearInterval(this.timer)
   }
 
-  public toFormattedPlayer(): FormattedPlayer {
+  public startPlaying(): void {
+    this.setPlaying(true)
+    this.startTimer()
+  }
+
+  public stopPlaying(): void {
+    this.setPlaying(false)
+    this.stopTimer()
+  }
+
+  public toFormattedPlayerData(): PlayerData {
     return {
       title: this.playerData.title,
       isPlaying: this.playerData.isPlaying,
