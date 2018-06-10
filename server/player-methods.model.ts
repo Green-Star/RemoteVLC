@@ -1,25 +1,5 @@
 import { PlayerData } from './player-data.model'
 
-/*
-const METHODS = {
-  INIT: 'init',
-  PAUSE: 'pause',
-  SET_TIME: 'setTime',
-  GET_TIME: 'getTime',
-  GET_TITLE: 'getTitle',
-  GET_LENGTH: 'getLength',
-  SET_VOLUME: 'setVolume',
-  GET_VOLUME: 'getVolume',
-  MODIFY_VOLUME: 'modifyVolume',
-  SET_VIDEO_TRACK: 'setVideoTrack',
-  GET_VIDEO_TRACKS: 'getVideoTracks',
-  SET_AUDIO_TRACK: 'setAudioTrack',
-  GET_AUDIO_TRACKS: 'getAudioTracks',
-  SET_SUBTITLE_TRACK: 'setSubtitleTrack',
-  GET_SUBTITLE_TRACKS: 'getSubtitleTracks'
-}
-*/
-
 export interface PlayerMethods {
   start: (playerName: string, filename: string) => void;
   getMediaInformations: () => Promise<PlayerData[]>;
