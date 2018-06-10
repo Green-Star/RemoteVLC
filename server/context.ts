@@ -1,5 +1,4 @@
 import { PlayerData } from './player-data.model'
-import { FormattedPlayer } from './player.model'
 import { Track } from './track.model'
 
 import { logger } from './logger'
