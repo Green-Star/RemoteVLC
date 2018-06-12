@@ -1,5 +1,6 @@
 import * as child_process from 'child_process'
 
+import * as Utils from './utils'
 import { Track } from './track.model'
 import { Context } from './context'
 import { Player } from './player'
@@ -67,13 +68,16 @@ export class VLCPlayer extends Player {
     this.vlcProcess.stdout.setEncoding('utf8')
     this.vlcProcess.stdout.on('data', (data: Buffer) => this.handleServerFeedback(this.tasks, data))
 
-    this.tasks.push(new Task(METHODS.INIT))
+    let task = new Task(METHODS.INIT)
 
-    /* Start media in pause mode */
-    setTimeout(() => this.pause(), 300)
+    this.tasks.push(task)
 
-    /* Get media informations */
-    setTimeout(() => this.getMediaInformations(), 1000)
+    /* Once INIT has finish, we'll wait a bit (500ms) to let VLC initialize its stuff, 
+      and then we send 'pause' and get the media informations
+    */
+    task.then(() => Utils.delay(500))
+        .then(() => this.pause())
+        .then(() => this.getMediaInformations())
   }
 
   public getMediaInformations (): Promise<PlayerData[]> {
