@@ -1,14 +1,10 @@
 import * as child_process from 'child_process'
 
-import * as Utils from './utils'
-import { Track } from './track.model'
-import { Context } from './context'
-import { Player } from './player'
-import { PlayerData } from './player-data.model'
-import { PlayerMethods } from './player-methods.model'
-import { PlayerFactory } from './player-factory'
-import { Task } from './task'
-import { logger } from './logger'
+import * as Utils from '../../utils'
+import { Context, Player } from '../common'
+import { Task } from '../../task'
+import { logger } from '../../logger'
+import { Track, PlayerData, PlayerMethods } from '../../models'
 
 class MethodResult {
   result: boolean;

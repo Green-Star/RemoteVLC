@@ -1,4 +1,4 @@
-import { Track } from './track.model'
+import { Track } from '../track'
 
 export interface PlayerData {
   title: string;

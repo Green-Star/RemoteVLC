@@ -1,7 +1,6 @@
-import { PlayerData } from './player-data.model'
-import { Track } from './track.model'
+import { Track, PlayerData } from '../../models'
 
-import { logger } from './logger'
+import { logger } from '../../logger'
 
 export class Context {
   private playerData: PlayerData

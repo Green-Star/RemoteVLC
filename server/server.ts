@@ -3,10 +3,9 @@ import * as http from 'http'
 import morgan = require('morgan')
 import * as bodyParser from 'body-parser'
 import * as path from 'path'
-import methodOverride = require ('method-override')
+import methodOverride = require('method-override')
 import { logger } from './logger'
-import { VLCPlayer } from './vlc-player'
-import { PlayerFactory } from './player-factory'
+import { PlayerFactory } from './player'
 
 if (!process.argv[2]) {
   logger.error('Missing media filename to play')

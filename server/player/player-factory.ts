@@ -1,7 +1,7 @@
-import { PlayerMethods } from './player-methods.model'
+import { PlayerMethods } from '../models'
+import { logger } from '../logger'
 
-import { VLCPlayer } from './vlc-player'
-import { logger } from './logger'
+import { VLCPlayer } from './players'
 
 export class PlayerFactory {
 	static getPlayer (playerName: string, filename: string): PlayerMethods {

@@ -1,8 +1,7 @@
 import * as express from 'express'
 import * as path from 'path'
-import { logger } from './logger'
-import { PlayerData } from './player-data.model'
-import { PlayerMethods } from './player-methods.model'
+import { logger } from '../logger'
+import { PlayerData, PlayerMethods } from '../models'
 
 /* playerInstance is just an object implementing the PlayerMethods */
 let playerInstance: PlayerMethods
@@ -32,12 +31,14 @@ router.use('/*', function (req, res, next) {
   res.sendFile(path.join(__dirname, './index.html'))
 })
 
-export = { 
+let exportRouter = { 
   apiRouter: router,
   create: function (player: PlayerMethods) {
     playerInstance = player
   }
 }
+
+export { exportRouter }
 
 function pong (req: express.Request, res: express.Response, next: express.NextFunction) {
   return res.send('pong').status(200).end()
