@@ -37,8 +37,10 @@ const logger = {
   internalLogger: internalLogger,
 
   /* Used for morgan logs */
-  stream: function (message: string, encoding: string) {
-    internalLogger.verbose(message);
+  stream: {
+    write: function (message: string, encoding: string){
+      internalLogger.verbose(message)
+    }
   },
 
   error: function (message: string) {
@@ -66,46 +68,6 @@ const logger = {
   }
 }
 
-
-/*
-logger.stream = {
-  write: function (message: string, encoding: string){
-    logger.verbose(message);
-  }
-}
-*/
-
 // ---------------------------------------------------------------------------
 
 export { logger }
-/*
-export = {
-  stream: function (message: string, encoding: string) {
-    logger.verbose(message);
-  },
-
-  error: function (message: string) {
-    logger.error(message)
-  },
-
-  warn: function (message: string) {
-    logger.warn(message)
-  },
-
-  info: function (message: string) {
-    logger.info(message)
-  },
-
-  verbose: function (message: string) {
-    logger.verbose(message)
-  },
-
-  debug: function (message: string) {
-    logger.debug(message)
-  },
-
-  silly: function (message: string) {
-    logger.silly(message)
-  }
-}
-*/

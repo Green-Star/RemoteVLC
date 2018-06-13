@@ -58,13 +58,13 @@ let router = new Router(player)
 /* Use client/dist folder to serve static files */
 app.use(express.static(path.dirname(__dirname) + '/client/dist'))
 
-app.use(bodyParser.urlencoded({extended:true}));// get information from html forms
+app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json())
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }))
 app.use(methodOverride())
 
 /* Log requests */
-//app.use(morgan('dev', { stream: logger.stream }))
+app.use(morgan('dev', { stream: logger.stream }))
 
 app.use('/', router.getInternalRouter())
 
@@ -72,43 +72,3 @@ const server = http.createServer(app)
 server.listen(8080)
 
 logger.info('Server started')
-
-/*
-player.play().then((context) => {
-  //console.log(`Player is playing ${context}`)
-})
-setTimeout(asyncData, 5000)
-setTimeout(play, 7000)
-setTimeout(pause, 12000)
-setTimeout(play, 17000)
-
-function asyncData () {
-  player.getMediaInformations().then((context) => {
-    console.log('MEDIA INFORMATIONS FONCTIONNE EN PROMEEEEEEESSSSSSEEEESS')
-    console.log('La preuve : ' + JSON.stringify(context[0]))
-  })
-  player.setTime(10).then((context) => {
-    console.log(JSON.stringify(context))
-  })
-  /*
-  player.getTime().then((context) => {
-    console.log('Et voiles les asyncData: ' + JSON.stringify(context))
-  })
-*/
-/*
-}
-
-function play () {
-  player.play().then((context) => {
-    context.timer = undefined
-    console.log(`*** PLAY *** ${JSON.stringify(context)}`)
-  })
-}
-
-function pause () {
-  player.pause().then((context) => {
-    context.timer = undefined
-    console.log(`*** PAUSE *** ${JSON.stringify(context)}`)
-  })
-}
-*/
