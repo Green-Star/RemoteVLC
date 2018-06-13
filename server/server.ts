@@ -6,6 +6,7 @@ import * as path from 'path'
 import methodOverride = require('method-override')
 import { logger } from './logger'
 import { PlayerFactory } from './player'
+import { Router } from './router'
 
 if (!process.argv[2]) {
   logger.error('Missing media filename to play')
@@ -52,9 +53,8 @@ const player = playerTest
 logger.info('Spawning web UI')
 
 const app = express()
-const router = require('./router')
+let router = new Router(player)
 
-router.create(player)
 /* Use client/dist folder to serve static files */
 app.use(express.static(path.dirname(__dirname) + '/client/dist'))
 
@@ -66,7 +66,7 @@ app.use(methodOverride())
 /* Log requests */
 //app.use(morgan('dev', { stream: logger.stream }))
 
-app.use('/', router.apiRouter)
+app.use('/', router.getInternalRouter())
 
 const server = http.createServer(app)
 server.listen(8080)
