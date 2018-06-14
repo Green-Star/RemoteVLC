@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build-ts": "tsc",
-    "start": "node dist/server"
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "express": "^4.12.4",
