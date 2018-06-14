@@ -14,10 +14,10 @@ export interface PlayerMethods {
   volumeUp: () => Promise<PlayerData>;
   volumeDown: () => Promise<PlayerData>;
   mute: () => Promise<PlayerData>;
-  setVideoTrack: (trackId) => Promise<PlayerData>;
+  setVideoTrack: (trackId: number) => Promise<PlayerData>;
   getVideoTracks: () => Promise<PlayerData>;
-  setAudioTrack: (trackId) => Promise<PlayerData>;
+  setAudioTrack: (trackId: number) => Promise<PlayerData>;
   getAudioTracks: () => Promise<PlayerData>;
-  setSubtitleTrack: (trackId) => Promise<PlayerData>;
+  setSubtitleTrack: (trackId: number) => Promise<PlayerData>;
   getSubtitleTracks: () => Promise<PlayerData>;
 }

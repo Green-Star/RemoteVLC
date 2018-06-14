@@ -20,10 +20,10 @@ export abstract class Player implements PlayerMethods {
   abstract volumeUp (): Promise<PlayerData>;
   abstract volumeDown (): Promise<PlayerData>;
   abstract mute (): Promise<PlayerData>;
-  abstract setVideoTrack (trackId): Promise<PlayerData>;
+  abstract setVideoTrack (trackId: number): Promise<PlayerData>;
   abstract getVideoTracks (): Promise<PlayerData>;
-  abstract setAudioTrack (trackId): Promise<PlayerData>;
+  abstract setAudioTrack (trackId: number): Promise<PlayerData>;
   abstract getAudioTracks (): Promise<PlayerData>;
-  abstract setSubtitleTrack (trackId): Promise<PlayerData>;
+  abstract setSubtitleTrack (trackId: number): Promise<PlayerData>;
   abstract getSubtitleTracks (): Promise<PlayerData>;
 }
