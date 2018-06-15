@@ -7,6 +7,7 @@ export interface PlayerMethods {
   play: () => Promise<PlayerData>;
   setTime: (time: number) => Promise<PlayerData>;
   getTime: () => Promise<PlayerData>;
+  addTime: (seconds: number) => Promise<PlayerData>;
   getTitle: () => Promise<PlayerData>;
   getLength: () => Promise<PlayerData>;
   setVolume: (volume: number) => Promise<PlayerData>;

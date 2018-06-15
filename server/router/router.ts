@@ -27,6 +27,7 @@ export class Router {
 
     this.router.get('/api/time', (req, res, next) => this.getTime(req, res, next))
     this.router.put('/api/time/:time', (req, res, next) => this.setTime(req, res, next))
+    this.router.put('/api/time/add/:seconds', (req, res, next) => this.addTime(req, res, next))
 
     this.router.get('/api/volume', (req, res, next) => this.getVolume(req, res, next))
     this.router.put('/api/volume/up', (req, res, next) => this.volumeUp(req, res, next))
@@ -116,6 +117,14 @@ export class Router {
       .catch(err => next(err))
   }
 
+  private addTime (req: express.Request, res: express.Response, next: express.NextFunction) {
+    let seconds: number = +req.params.seconds
+
+    this.player
+      .addTime(seconds)
+      .then(context => res.json(context))
+      .catch(err => next(err))
+  }
 
   private setVideoTrack (req: express.Request, res: express.Response, next: express.NextFunction) {
     let id: number = +req.params.id

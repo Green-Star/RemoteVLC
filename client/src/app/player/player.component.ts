@@ -74,7 +74,7 @@ export class PlayerComponent implements OnInit {
     this.playerService.setTime(seconds).subscribe(data => this.updatePlayerData(data))
   }
   addTime(seconds: number) {
-    this.setTime(this.timerComponent.getTimer() + seconds)
+    this.playerService.addTime(seconds).subscribe(data => this.updatePlayerData(data))
   }
 
   volumeDown() {

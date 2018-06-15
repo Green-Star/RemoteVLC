@@ -13,6 +13,7 @@ export abstract class Player implements PlayerMethods {
   abstract play (): Promise<PlayerData>;
   abstract setTime (time: number): Promise<PlayerData>;
   abstract getTime (): Promise<PlayerData>;
+  abstract addTime (seconds: number): Promise<PlayerData>;
   abstract getTitle (): Promise<PlayerData>;
   abstract getLength (): Promise<PlayerData>;
   abstract setVolume (volume: number): Promise<PlayerData>;

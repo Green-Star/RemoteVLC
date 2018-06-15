@@ -10,6 +10,7 @@ const httpOptions = {
 @Injectable()
 export class PlayerService {
   apiRoute: string = '/api'
+  timeRoute: string = `${this.apiRoute}/time`
   volumeRoute: string = `${this.apiRoute}/volume`
 
   constructor(
@@ -30,7 +31,10 @@ export class PlayerService {
     return this.http.put<Player>(`${this.apiRoute}/play`, null)
   }
   setTime(seconds: number): Observable<Player> {
-    return this.http.put<Player>(`${this.apiRoute}/time/${seconds}`, null)
+    return this.http.put<Player>(`${this.timeRoute}/${seconds}`, null)
+  }
+  addTime(seconds: number): Observable<Player> {
+    return this.http.put<Player>(`${this.timeRoute}/add/${seconds}`, null)
   }
 
   volumeDown(): Observable<Player> {
