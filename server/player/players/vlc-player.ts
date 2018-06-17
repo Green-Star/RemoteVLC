@@ -106,7 +106,7 @@ export class VLCPlayer extends Player {
     /* If we try to set time to the current value, there's no need to do anything,
       so we just return an immediately resolved promise */
     if (time === this.context.getTime()) {
-      return new Promise(resolve => resolve(this.context.toFormattedPlayerData()))
+      return Utils.resolvedPromise(this.context.toFormattedPlayerData())
     }
 
     let task = new Task(METHODS.SET_TIME)
