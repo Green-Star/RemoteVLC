@@ -1,4 +1,5 @@
-import { PlayerData, PlayerMethods } from '../../models'
+import { PlayerData } from '../../../shared'
+import { PlayerMethods } from '../../models'
 
 export abstract class Player implements PlayerMethods {
   protected filename: string

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core'
-import { Track } from '../models'
+import { Track } from '../../../../shared'
 
 @Pipe({name: 'displayTrack'})
 export class DisplayTrackPipe implements PipeTransform {

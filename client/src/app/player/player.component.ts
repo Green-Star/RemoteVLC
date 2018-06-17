@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core'
+import { PlayerData, Track } from '../../../../shared'
 import { PlayerService } from '../service'
-import { Player, Track } from '../models'
 import { TimerComponent } from '../timer/timer.component'
 
 @Component({
@@ -9,7 +9,7 @@ import { TimerComponent } from '../timer/timer.component'
   styleUrls: ['./player.component.css']
 })
 export class PlayerComponent implements OnInit {
-  player: Player
+  player: PlayerData
   selectedVideoTrack: Track
   selectedAudioTrack: Track
   selectedSubtitleTrack: Track
@@ -22,7 +22,7 @@ export class PlayerComponent implements OnInit {
     this.playerService.init().subscribe(data => this.updatePlayerData(data))
   }
 
-  updatePlayerData(data: Player) {
+  updatePlayerData(data: PlayerData) {
       this.player = data
       this.selectedVideoTrack = this.getSelectedVideoTrack()
       this.selectedAudioTrack = this.getSelectedAudioTrack()

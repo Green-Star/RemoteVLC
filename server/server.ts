@@ -56,7 +56,7 @@ const app = express()
 let router = new Router(player)
 
 /* Use client/dist folder to serve static files */
-app.use(express.static(path.dirname(__dirname) + '/client/dist'))
+app.use(express.static(path.join(path.dirname(path.dirname(__dirname)), 'client', 'dist')))
 
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(bodyParser.json())

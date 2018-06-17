@@ -3,7 +3,7 @@ import * as path from 'path'
 import * as mkdirp from 'mkdirp'
 
 /* Create the directory if it does not exist */
-const logsDirectory = path.join(__dirname, '..', '..', 'logs')
+const logsDirectory = path.join(__dirname, '..', '..', '..', 'logs')
 mkdirp.sync(logsDirectory)
 
 let transports = []

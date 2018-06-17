@@ -1,7 +1,8 @@
 import * as express from 'express'
 import * as path from 'path'
 import { logger } from '../logger'
-import { PlayerData, PlayerMethods } from '../models'
+import { PlayerData } from '../../shared'
+import { PlayerMethods } from '../models'
 
 export class Router {
   private router: express.Router

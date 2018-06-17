@@ -1,4 +1,4 @@
-import { PlayerData } from './player-data.model'
+import { PlayerData } from '../../../shared'
 
 export interface PlayerMethods {
   start: () => void;

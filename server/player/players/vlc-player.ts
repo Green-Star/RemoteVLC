@@ -4,7 +4,8 @@ import * as Utils from '../../utils'
 import { Context, Player } from '../common'
 import { Task } from '../../task'
 import { logger } from '../../logger'
-import { Track, PlayerData, PlayerMethods } from '../../models'
+import { PlayerMethods } from '../../models'
+import { Track, PlayerData } from '../../../shared'
 
 class MethodResult {
   result: boolean;

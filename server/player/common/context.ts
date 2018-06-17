@@ -1,4 +1,4 @@
-import { Track, PlayerData } from '../../models'
+import { Track, PlayerData } from '../../../shared'
 
 import { logger } from '../../logger'
 
