@@ -70,7 +70,7 @@ export class PlayerComponent implements OnInit {
   }
   setTime(seconds: number) {
     if (seconds < 0) seconds = 0
-    if (seconds > this.length) seconds = this.length
+    if (seconds > this.player.length) seconds = this.player.length
     this.playerService.setTime(seconds).subscribe(data => this.updatePlayerData(data))
   }
   addTime(seconds: number) {
