@@ -19,35 +19,11 @@ logger.info('Starting Remote control for ' + process.argv[2])
 /*** Start player control ***/
 logger.info('Spawning player ...')
 
-let player = PlayerFactory.getPlayer('vlc', process.argv[2])
-player.start()
-
 // Use a mock player when building WebUI
-/*
-const playerTest = {
-  title: "La grande aventure Lego.mkv",
-  isPlaying: false,
-  volume: 129,
-  time: 10,
-  length: 6035,
-  tracks: {
-    video: [
-      {id: -1, language: "Désactiver", selected: false},
-      {id: 0, title: "Piste 1", language: "Anglais", selected: true}
-    ],
-    audio: [
-    ],
-    subtitle: [
-      {id: -1, language: "Désactiver", selected: true},
-      {id: 3, title: "FRF", language: "Français", selected: false},
-      {id: 4, title: "FR", language: "Français", selected: false},
-      {id: 5, title: "EN",language: "Anglais", selected: false}
-    ]
-  },
-  timer: undefined
-}
-const player = playerTest
-*/
+let player = PlayerFactory.getPlayer('mock-player', process.argv[2])
+
+// let player = PlayerFactory.getPlayer('vlc', process.argv[2])
+player.start()
 
 /*** Start WebUI control ***/
 logger.info('Spawning web UI')
