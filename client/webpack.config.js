@@ -50,8 +50,8 @@ module.exports = {
 	    */
 
 		new CopyWebpackPlugin([
-			//{ test: /(.+\/)?(.+)\.css$/, from: path.join(rootDir, 'src'), to: './assets/styles/[2].[ext]' }
-			{ from: './src/**/*.css', to: 'assets/styles' }
+//			{ test: /(.+\/)?(.+)\.css$/, from: './src', to: 'assets/styles/[2].[ext]' }
+			{ from: './src/**/*.css', to: 'assets/styles', flatten: true }
 		]),
 
 		new CopyWebpackPlugin([
