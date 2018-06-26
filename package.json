@@ -22,7 +22,7 @@
     "method-override": "^2.3.10",
     "mkdirp": "^0.5.1",
     "morgan": "^1.9.0",
-    "typescript": "^2.8.3",
+    "typescript": "~2.7.2",
     "winston": "^2.4.2"
   },
   "devDependencies": {
@@ -32,6 +32,8 @@
     "@types/mkdirp": "^0.5.2",
     "@types/node": "^10.0.8",
     "@types/winston": "^2.3.9",
-    "typescript": "^2.8.3"
+    "awesome-typescript-loader": "^5.2.0",
+    "html-loader": "^0.5.5",
+    "typescript": "~2.7.2"
   }
 }

@@ -25,7 +25,7 @@ export class TimerComponent implements OnInit {
   }
 
   startTimer() {
-    this.timer = setInterval(() => this.updateSeconds(), 1000)
+    this.timer = window.setInterval(() => this.updateSeconds(), 1000)
   }
 
   updateTimer(seconds: number) {
