@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core'
 import { PlayerData, Track } from '../../../../shared'
 import { PlayerService } from '../service'
 import { TimerComponent } from '../timer/timer.component'
+import { TrackComponent } from '../track/track.component'
 
 @Component({
   selector: 'app-player',
