@@ -4,7 +4,6 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ScriptExtPlugin = require('script-ext-html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const { AngularCompilerPlugin } = require('@ngtools/webpack')
 
 const rootDir = path.join(__dirname)
@@ -26,37 +25,14 @@ module.exports = {
 	module: {
 		rules: [
 			{ test: /\.ts$/, use: '@ngtools/webpack', exclude: /node_modules/ },
-/*			{
-        test: /\.css$/,
-        use: [
-           MiniCssExtractPlugin.loader,
-          'css-loader'
-        ]
-      },
-      */
 			{ test: /\.css$/, use: 'raw-loader' },
 			{ test: /\.html$/, use: 'raw-loader' }
 		]
 	},
 	plugins	: [
-		/* Bundle all you styling into one style.css file */
-		//new ExtractTextPlugin({ filename: 'style.css', allChunks: true }),
-/*
-	    new MiniCssExtractPlugin({
-	      // Options similar to the same options in webpackOptions.output
-	      // both options are optional
-	      filename: "[name].css",
-	      chunkFilename: "[id].css"
-	    }),
-	    */
-
 		new CopyWebpackPlugin([
-//			{ test: /(.+\/)?(.+)\.css$/, from: './src', to: 'assets/styles/[2].[ext]' }
+			{ from: path.join(rootDir, 'src', 'assets'), to: 'assets' },
 			{ from: './src/**/*.css', to: 'assets/styles', flatten: true }
-		]),
-
-		new CopyWebpackPlugin([
-			{ from: path.join(rootDir, 'src', 'assets'), to: 'assets' }
 		]),
 
 		new HtmlWebpackPlugin({
