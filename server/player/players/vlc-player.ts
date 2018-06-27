@@ -471,7 +471,7 @@ export class VLCPlayer extends Player {
 
     let pos = data.indexOf(safeguard)
     if (pos > -1) {
-      let volume = +(data.substr(0, pos))
+      let volume = parseInt(data.substr(0, pos))
       this.context.setVolume(volume)
 
       returnedResult = true
@@ -487,7 +487,7 @@ export class VLCPlayer extends Player {
     let returnedResult = false
     let returnedData = data
 
-    let regexp = new RegExp(/^\( audio volume: (\d+) \)\r\n/)
+    let regexp = new RegExp(/^\( audio volume: (\d+)(?:,|.\d+)? \)\r\n/)
     let matching = data.match(regexp)
 
     if (matching && matching[0] && matching[1]) {
