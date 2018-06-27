@@ -11,24 +11,16 @@
     "e2e": "ng e2e"
   },
   "private": true,
-  "dependencies": {
-    "@angular/common": "~6.0.6",
-    "@angular/compiler": "~6.0.6",
-    "@angular/core": "~6.0.6",
-    "@angular/forms": "~6.0.6",
-    "@angular/http": "~6.0.6",
-    "@angular/platform-browser": "~6.0.6",
-    "@angular/platform-browser-dynamic": "~6.0.6",
-    "@angular/router": "~6.0.6",
-    "ajv": "^6.5.1",
-    "core-js": "~2.4.1",
-    "rxjs": "~6.2.1",
-    "zone.js": "~0.8.19"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@angular/cli": "^6.0.8",
+    "@angular/common": "~6.0.6",
+    "@angular/compiler": "~6.0.6",
     "@angular/compiler-cli": "~6.0.6",
-    "@angular/language-service": "6.0.6",
+    "@angular/forms": "~6.0.6",
+    "@angular/platform-browser": "~6.0.6",
+    "@angular/platform-browser-dynamic": "~6.0.6",
+    "@angular/core": "~6.0.6",
     "@ngtools/webpack": "^6.0.8",
     "@types/node": "~6.0.60",
     "copy-webpack-plugin": "~4.5.1",
@@ -37,6 +29,7 @@
     "script-ext-html-webpack-plugin": "^2.0.1",
     "typescript": "~2.7.2",
     "webpack": "^4.12.1",
-    "webpack-cli": "^3.0.8"
+    "webpack-cli": "^3.0.8",
+    "zone.js": "~0.8.19"
   }
 }
