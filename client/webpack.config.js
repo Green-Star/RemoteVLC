@@ -10,7 +10,8 @@ const { AngularCompilerPlugin } = require('@ngtools/webpack')
 const rootDir = path.join(__dirname)
 
 module.exports = {
-	mode: 'production',
+	mode: 'development',
+	devtool: 'source-map',
 	entry: {
 		main: path.join(rootDir, 'src', 'main.ts')
 	},
@@ -61,7 +62,7 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			template: path.join(rootDir, 'src', 'index.html'),
 			output: path.join(rootDir, 'dist'),
-			inject: 'head'
+			inject: 'body'
 		}),
 
 		new ScriptExtPlugin({

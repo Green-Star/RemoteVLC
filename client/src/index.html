@@ -7,6 +7,13 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+  <!-- Yeah, that's pretty lame but since Webpack 4 does not support Angular for now, it's the only workaround I found -->
+  <!-- See https://github.com/webpack-contrib/mini-css-extract-plugin/issues/186 -->
+  <link rel="stylesheet" type="text/css" href="/assets/styles/styles.css">
+  <link rel="stylesheet" type="text/css" href="/assets/styles/app.component.css">
+  <link rel="stylesheet" type="text/css" href="/assets/styles/player.component.css">
+  <link rel="stylesheet" type="text/css" href="/assets/styles/timer.component.css">
+  <link rel="stylesheet" type="text/css" href="/assets/styles/track.component.css">
 </head>
 <body>
   <app-root></app-root>
