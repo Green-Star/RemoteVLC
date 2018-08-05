@@ -1,26 +1,61 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit, AfterViewInit, AfterViewChecked, ViewChild } from '@angular/core'
 import { PlayerData, Track } from '../../../../shared'
 import { PlayerService } from '../service'
 import { TimerComponent } from '../timer/timer.component'
 import { TrackComponent } from '../track/track.component'
+import { Subscription } from 'rxjs'
 
 @Component({
   selector: 'app-player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.css']
 })
-export class PlayerComponent implements OnInit {
+export class PlayerComponent implements OnInit, AfterViewInit, AfterViewChecked {
   player: PlayerData
   selectedVideoTrack: Track
   selectedAudioTrack: Track
   selectedSubtitleTrack: Track
   @ViewChild(TimerComponent) timerComponent: TimerComponent
+  @ViewChild(TrackComponent) trackComponent: TrackComponent
+
+  trackComponentSubscription: Subscription
 
   constructor(private playerService : PlayerService) {}
 
   ngOnInit() {
     this.player = undefined
     this.playerService.init().subscribe(data => this.updatePlayerData(data))
+    this.trackComponentSubscription = undefined
+  }
+
+  ngAfterViewInit() {
+    console.log('AfterViewInit')
+
+    if (!this.trackComponent) return
+      /*
+    this.trackComponent.getData().subscribe(data => {
+      console.log('subscribe in PlayerComponent, AfterViewInit')
+      this.updatePlayerData(data)
+    })
+    */
+  }
+
+  ngAfterViewChecked() {
+    console.log('AfterViewChecked')
+
+    if (!this.trackComponent) return
+      /* A corriger, ne fonctionne qu'une fois */
+    if (!this.trackComponentSubscription) {
+      this.trackComponentSubscription = this.trackComponent.getData()
+      .subscribe(data => {
+        console.log('subscribe in PlayerComponent')
+        this.updatePlayerData(data)
+
+        /* Ca n'a pas trop l'air de marcher (-> update playerData ?) ... */
+        this.trackComponentSubscription.unsubscribe()
+        this.trackComponentSubscription = undefined
+      })//.unsubscribe()
+    }
   }
 
   updatePlayerData(data: PlayerData) {
@@ -28,6 +63,14 @@ export class PlayerComponent implements OnInit {
       this.selectedVideoTrack = this.getSelectedVideoTrack()
       this.selectedAudioTrack = this.getSelectedAudioTrack()
       this.selectedSubtitleTrack = this.getSelectedSubtitleTrack()
+  /*  
+    this.trackComponent.updateValue().subscribe(data => {
+      console.log('subscribe in PlayerComponent')
+      this.updatePlayerData(data)
+    })
+*/
+console.log('UPDATE DATA')
+console.warn(JSON.stringify(this.playerService))
       if (this.timerComponent === undefined) return
       this.timerComponent.updateTimer(this.player.time)
   }
