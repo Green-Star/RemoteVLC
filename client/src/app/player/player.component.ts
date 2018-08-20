@@ -3,7 +3,7 @@ import { PlayerData, Track } from '../../../../shared'
 import { PlayerService } from '../service'
 import { TimerComponent } from '../timer/timer.component'
 import { TrackComponent } from '../track/track.component'
-import { Subscription } from 'rxjs'
+import { Subscription, Observable } from 'rxjs'
 
 @Component({
   selector: 'app-player',
@@ -16,9 +16,12 @@ export class PlayerComponent implements OnInit, AfterViewInit, AfterViewChecked 
   selectedAudioTrack: Track
   selectedSubtitleTrack: Track
   @ViewChild(TimerComponent) timerComponent: TimerComponent
-  @ViewChild(TrackComponent) trackComponent: TrackComponent
 
   trackComponentSubscription: Subscription
+
+  @ViewChild('video') videoTrackComponent: TrackComponent
+  @ViewChild('audio') audioTrackComponent: TrackComponent
+  @ViewChild('subtitle') subtitleTrackComponent: TrackComponent
 
   constructor(private playerService : PlayerService) {}
 
@@ -31,48 +34,73 @@ export class PlayerComponent implements OnInit, AfterViewInit, AfterViewChecked 
   ngAfterViewInit() {
     console.log('AfterViewInit')
 
-    if (!this.trackComponent) return
-      /*
-    this.trackComponent.getData().subscribe(data => {
-      console.log('subscribe in PlayerComponent, AfterViewInit')
-      this.updatePlayerData(data)
-    })
-    */
+    if (!this.videoTrackComponent) return
   }
 
   ngAfterViewChecked() {
+    /* Est-ce qu'on ne pourrait pas juste ignorer la modif des tracks au final ? */
     console.log('AfterViewChecked')
 
-    if (!this.trackComponent) return
+    if (!this.videoTrackComponent) return
+
       /* A corriger, ne fonctionne qu'une fois */
     if (!this.trackComponentSubscription) {
-      this.trackComponentSubscription = this.trackComponent.getData()
+      /*
+      let playerData$: Observable<PlayerData> = this.videoTrackComponent.getData()
+
+      if (playerData$) {
+        this.trackComponentSubscription = playerData$.subscribe(data => {
+        console.log('subscribe in PlayerComponent')
+        console.warn('this.trackcomponentSubscription')
+        if (this.trackComponentSubscription) console.warn('DEfined')
+          else console.warn('undefined')
+        this.updatePlayerData(data)
+        this.trackComponentSubscription.unsubscribe()
+        this.trackComponentSubscription = undefined
+      })
+        console.warn('END OF SUBSCRIBE')
+      }
+      else 
+      {
+        console.log('playerDate undefined')
+
+      }
+      */
+
+/*
+      this.trackComponentSubscription = this.videoTrackComponent.getData()
       .subscribe(data => {
         console.log('subscribe in PlayerComponent')
         this.updatePlayerData(data)
 
         /* Ca n'a pas trop l'air de marcher (-> update playerData ?) ... */
+/*
         this.trackComponentSubscription.unsubscribe()
         this.trackComponentSubscription = undefined
-      })//.unsubscribe()
+      })
+*/
     }
   }
 
   updatePlayerData(data: PlayerData) {
       this.player = data
+      /*
       this.selectedVideoTrack = this.getSelectedVideoTrack()
       this.selectedAudioTrack = this.getSelectedAudioTrack()
       this.selectedSubtitleTrack = this.getSelectedSubtitleTrack()
-  /*  
-    this.trackComponent.updateValue().subscribe(data => {
-      console.log('subscribe in PlayerComponent')
-      this.updatePlayerData(data)
-    })
-*/
+      */
+
 console.log('UPDATE DATA')
-console.warn(JSON.stringify(this.playerService))
+//console.warn(JSON.stringify(this.playerService))
+/*
       if (this.timerComponent === undefined) return
       this.timerComponent.updateTimer(this.player.time)
+    */
+
+      if (this.timerComponent) this.timerComponent.updateTimer(this.player.time)
+      if (this.videoTrackComponent) this.videoTrackComponent.setTracks(this.player.tracks.video)
+      if (this.audioTrackComponent) this.audioTrackComponent.setTracks(this.player.tracks.audio)
+      if (this.subtitleTrackComponent) this.subtitleTrackComponent.setTracks(this.player.tracks.subtitle)
   }
 
   getSelectedVideoTrack() {
