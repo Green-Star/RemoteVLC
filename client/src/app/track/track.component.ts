@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core'
-import { Observable, of } from 'rxjs'
 import { PlayerData, Track } from '../../../../shared'
 import { PlayerService } from '../service'
 

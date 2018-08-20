@@ -3,7 +3,6 @@ import { PlayerData, Track } from '../../../../shared'
 import { PlayerService } from '../service'
 import { TimerComponent } from '../timer/timer.component'
 import { TrackComponent } from '../track/track.component'
-import { Subscription, Observable } from 'rxjs'
 
 @Component({
   selector: 'app-player',
