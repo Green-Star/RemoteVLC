@@ -8,7 +8,8 @@
     "build": "webpack --config webpack.config.js",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "hmr": "node dev-tools/server.build-ui.js build-hmr"
   },
   "private": true,
   "dependencies": {},
