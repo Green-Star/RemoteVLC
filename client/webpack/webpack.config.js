@@ -7,7 +7,8 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 const ScriptExtPlugin = require('script-ext-html-webpack-plugin')
 const { AngularCompilerPlugin } = require('@ngtools/webpack')
 
-const rootDir = path.join(__dirname)
+const rootDir = path.join(path.dirname(__dirname))
+console.log(rootDir)
 
 module.exports = {
 	entry: {
@@ -53,8 +54,10 @@ module.exports = {
 		}),
 
 		new CleanWebpackPlugin([
-			path.join(rootDir, 'dist')
-		]),
+				path.join(rootDir, 'dist')
+			], 
+			{ root: rootDir }
+		),
 
 	]
 }
