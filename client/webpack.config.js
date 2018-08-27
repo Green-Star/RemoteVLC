@@ -10,8 +10,6 @@ const { AngularCompilerPlugin } = require('@ngtools/webpack')
 const rootDir = path.join(__dirname)
 
 module.exports = {
-	mode: 'development',
-	devtool: 'source-map',
 	entry: {
 		main: path.join(rootDir, 'src', 'main.ts')
 	},

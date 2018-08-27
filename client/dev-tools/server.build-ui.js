@@ -62,4 +62,4 @@ var server = http.createServer(app)
 server.listen(8080)
 
 logger.info('Server started')
-logger.info('Server listening on ' + server.address())
+logger.info('Server listening on ' + server.address().address + ':' + server.address().port)
