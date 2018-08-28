@@ -6,7 +6,7 @@ import { PlayerMethods } from '../models'
 
 export class Router {
   private router: express.Router
-  /* playerInstance is just an object implementing the PlayerMethods */
+  /* player is just an object implementing the PlayerMethods */
   private player: PlayerMethods
   
   constructor (player: PlayerMethods) {
