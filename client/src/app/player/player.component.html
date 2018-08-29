@@ -39,28 +39,9 @@
   <div class="component-container bordered" id="track-controls">
     <legend>Tracks</legend>
     <div class="data-container">
-    <span>Subtitles
-      <select [ngModel]="selectedSubtitleTrack" (ngModelChange)="setSelectedSubtitleTrack($event)">
-        <option *ngFor="let subtitleTrack of player.tracks.subtitle" [ngValue]="subtitleTrack">
-          {{ subtitleTrack | displayTrack }}
-        </option>
-      </select>
-    </span>
-    <span>Audio
-      <select [ngModel]="selectedAudioTrack" (ngModelChange)="setSelectedAudioTrack($event)">
-        <option *ngFor="let audioTrack of player.tracks.audio" [ngValue]="audioTrack">
-          {{ audioTrack | displayTrack }}
-        </option>
-      </select>
-    </span>
-    <span>Video
-      <select [ngModel]="selectedVideoTrack" (ngModelChange)="setSelectedVideoTrack($event)">
-        <option *ngFor="let videoTrack of player.tracks.video" [ngValue]="videoTrack">
-          {{ videoTrack | displayTrack }}
-        </option>
-      </select>
-    </span>
+      <app-track #subtitle [type]="'subtitle'" [tracks]="player.tracks.subtitle"></app-track>
+      <app-track #audio [type]="'audio'" [tracks]="player.tracks.audio"></app-track>
+      <app-track #video [type]="'video'" [tracks]="player.tracks.video"></app-track>
     </div>
   </div>
-
 </div>

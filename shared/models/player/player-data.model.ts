@@ -1,6 +1,6 @@
-import { Track } from './track'
+import { Track } from '../track'
 
-export class Player {
+export interface PlayerData {
   title: string;
   isPlaying: boolean;
   volume: number;

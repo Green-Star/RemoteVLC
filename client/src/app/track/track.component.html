@@ -1,0 +1,8 @@
+<span>
+  {{ type | titlecase }}
+  <select [ngModel]="selectedTrack" (ngModelChange)="setSelectedTrack($event)">
+    <option *ngFor="let track of tracks" [ngValue]="track">
+      {{ track | displayTrack }}
+    </option>
+  </select>
+</span>

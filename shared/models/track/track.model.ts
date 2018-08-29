@@ -1,4 +1,4 @@
-export class Track {
+export interface Track {
 	id: number;
 	title?: string;
 	language: string;
