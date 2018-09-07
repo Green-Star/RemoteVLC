@@ -1,13 +1,56 @@
 import 'mocha'
 import { expect } from 'chai'
 
+import request = require('supertest')
+import express = require('express')
+
 import { Router } from '../../router'
+import { MockPlayer } from '../../player'
 
-describe('My first test', () => {
+import { PlayerData } from '../../../shared'
 
-  it('should be my first pending test')
-  it('should be my first passed test', (done) => {
-    done()
+
+describe('Router tests', () => {
+  let router: Router
+  let player: MockPlayer
+  let result: PlayerData
+  let app: express.Application
+
+  before(function() {
+    app = express()
+    player = new MockPlayer('test')
+    player.start()
+    router = new Router(player)
+    app.use(router.getInternalRouter())
+
+    player.getMediaInformations().then(tabContext => {
+      result = tabContext[0]
+    })
+
+    app.get('/user', function(req, res) {
+      res.status(200).json({ name: 'john'})
+    })
   })
 
+  it('Should get the media informations', async function () {
+    const res = await getRequest(app, '/api/all')
+
+    expect(res.body).to.deep.equal(result)
+  })
+
+
+  it.skip('Should fail', async function () {
+    const res = await getRequest(app, '/api/all')
+
+    result.title = 'Totot'
+    expect(res.body).to.deep.equal(result)
+  })
+
+  function getRequest(url, route, returnCode = 200) {
+    return request(url)
+            .get(route)
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(returnCode)
+  }
 })
