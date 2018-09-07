@@ -9,6 +9,8 @@ import { MockPlayer } from '../../player'
 
 import { PlayerData } from '../../../shared'
 
+import { getRequest } from '../utils'
+
 
 describe('Router tests', () => {
   let router: Router
@@ -37,20 +39,4 @@ describe('Router tests', () => {
 
     expect(res.body).to.deep.equal(result)
   })
-
-
-  it.skip('Should fail', async function () {
-    const res = await getRequest(app, '/api/all')
-
-    result.title = 'Totot'
-    expect(res.body).to.deep.equal(result)
-  })
-
-  function getRequest(url, route, returnCode = 200) {
-    return request(url)
-            .get(route)
-            .set('Accept', 'application/json')
-            .expect('Content-Type', /json/)
-            .expect(returnCode)
-  }
 })
