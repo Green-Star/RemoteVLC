@@ -1,6 +1,9 @@
-import request = require('supertest')
+import { delay, resolvedPromise } from '../utils'
 
-function getRequest(url, route, returnCode = 200) {
+import request = require('supertest')
+import express = require('express')
+
+function getRequest(url: express.Application | string, route: string, returnCode: number = 200) {
   return request(url)
           .get(route)
           .set('Accept', 'application/json')
@@ -8,25 +11,21 @@ function getRequest(url, route, returnCode = 200) {
           .expect(returnCode)
 }
 
-function putRequest (options: {
-  url: string,
-  path: string,
-  fields: { [ fieldName: string ]: any },
-  statusCodeExpected?: number
-}) {
-  if (!options.statusCodeExpected) options.statusCodeExpected = 204
+function putRequest(url: express.Application | string, route: string, value: any = undefined, returnCode: number = 200) {
+  let path = route
+  if (value !== undefined) path = route + '/' + value
 
-  const req = request(options.url)
-                .put(options.path)
-                .set('Accept', 'application/json')
+  let req = request(url)
+              .put(path)
+              .set('Accept', 'application/json')
 
-  return req.send(options.fields)
-            .expect(options.statusCodeExpected)
+  return req.send()
+            .expect(returnCode)
 }
 
-
-
 export {
+  delay,
+  resolvedPromise,
   getRequest,
   putRequest
 }
