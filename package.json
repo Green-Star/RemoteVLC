@@ -12,7 +12,7 @@
     "build-server": "tsc",
     "build-client": "cd client; npm run build;",
     "start": "node dist/server/server.js",
-    "test": "mocha -r ts-node/register --bail ./server/test/index.ts"
+    "test": "NODE_ENV='test' mocha -r ts-node/register --bail ./server/test/index.ts"
   },
   "dependencies": {
     "express": "^4.16.3",
