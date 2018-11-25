@@ -6,8 +6,12 @@ import { Track, PlayerData } from '../../../shared'
 export class MockPlayer extends Player {
   private context: Context
 
-  constructor (filename: string) {
+  constructor (
+    filename: string,
+    context: Context
+  ) {
     super(filename)
+    this.context = context
   }
 
   public start (): void {
@@ -34,7 +38,6 @@ export class MockPlayer extends Player {
       timer: undefined
     }
 
-    this.context = new Context()
     this.context.setTitle(mockData.title)
     this.context.setPlaying(mockData.isPlaying)
     this.context.setVolume(mockData.volume)

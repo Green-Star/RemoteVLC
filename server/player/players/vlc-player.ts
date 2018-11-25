@@ -37,25 +37,34 @@ const METHODS = {
 }
 
 export class VLCPlayer extends Player {
+  private spawnService: { (command: string, args?: ReadonlyArray<string>, options?: child_process.SpawnOptions): child_process.ChildProcess }
   private context: Context
   private tasks: Task[]
   private data: string
   private internalMethods: { (data: string): MethodResult } []
   private vlcProcess: child_process.ChildProcess
 
-  constructor (filename: string) {
+
+  constructor (
+    filename: string,
+    spawnService: { (command: string, args?: ReadonlyArray<string>, options?: child_process.SpawnOptions): child_process.ChildProcess },
+    context: Context,
+    tasks: Task[],
+    data: string
+  ) {
     super(filename)
-    this.tasks = []
-    this.data = ''
-    this.internalMethods = []
     this.vlcProcess = undefined
+    this.internalMethods = []
     this.setInternalMethods()
-    this.context = new Context()
+    this.spawnService = spawnService
+    this.context = context
+    this.tasks = tasks
+    this.data = data
   }
 
   public start (): void {
     /* Spawn VLC process */
-    this.vlcProcess = child_process.spawn('vlc',
+    this.vlcProcess = this.spawnService('vlc',
               [ this.filename, '--fullscreen', '--play-and-exit', '-I rc' ])
     
     /* VLC spawns in playing mode by default */

@@ -5,7 +5,7 @@ import request = require('supertest')
 import express = require('express')
 
 import { Router } from '../../router'
-import { MockPlayer } from '../../player'
+import { MockPlayer, Context } from '../../player'
 
 import { PlayerData } from '../../../shared'
 
@@ -20,7 +20,7 @@ describe('Router tests', () => {
 
   before(function() {
     app = express()
-    player = new MockPlayer('test')
+    player = new MockPlayer('test', new Context())
     player.start()
     router = new Router(player)
     app.use(router.getInternalRouter())
