@@ -21,7 +21,7 @@ describe('VLC player tests', () => {
     fakeProcess = {
       stdin: new Duplex({
         read(size?) {},
-        write(chunk, encoding?, callback?) { console.log(`STDIN : Received: ${chunk}`); callback() }
+        write(chunk, encoding?, callback?) { callback() }
       }),
       stdout: new Duplex({
         read(size?) {},
