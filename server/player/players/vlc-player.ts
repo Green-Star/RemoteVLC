@@ -112,6 +112,12 @@ export class VLCPlayer extends Player {
   }
 
   public setTime (time: number): Promise<PlayerData> {
+    let length = this.context.getLength()
+
+    /* Be sure to stay in the media's time */
+    if (time < 0) time = 0
+    if (time > length) time = length
+
     /* If we try to set time to the current value, there's no need to do anything,
       so we just return an immediately resolved promise */
     if (time === this.context.getTime()) {
@@ -137,11 +143,7 @@ export class VLCPlayer extends Player {
   }
 
   public addTime (seconds: number): Promise<PlayerData> {
-    let length: number = this.context.getLength()
     let time: number = this.context.getTime() + seconds
-
-    if (time < 0) time = 0
-    if (time > length) time = length
 
     return this.setTime(time)
   }

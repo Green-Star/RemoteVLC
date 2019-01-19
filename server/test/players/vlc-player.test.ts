@@ -259,6 +259,24 @@ describe('VLC player tests', () => {
       expect(result).to.deep.equal(expectedContext.toFormattedPlayerData())
     })
 
+    it ("Should not set the time before the media's start", async function () {
+      let promise = vlcPlayer.setTime(-5)
+      fakeProcess.stdout.push("> ")
+      let result = await promise
+
+      expectedContext.setTime(0)
+      expect(result).to.deep.equal(expectedContext.toFormattedPlayerData())
+    })
+
+    it ("Should not set the time beyond the media's length", async function () {
+      let promise = vlcPlayer.setTime(expectedContext.getLength() + 6)
+      fakeProcess.stdout.push("> ")
+      let result = await promise
+
+      expectedContext.setTime(expectedContext.getLength())
+      expect(result).to.deep.equal(expectedContext.toFormattedPlayerData())
+    })
+
     it ("Should not go before the media's start", async function () {
       let timePromise = vlcPlayer.setTime(3)
       fakeProcess.stdout.push("> ")
@@ -288,9 +306,6 @@ describe('VLC player tests', () => {
       expectedContext.setTime(expectedContext.getLength())
       expect(result).to.deep.equal(expectedContext.toFormattedPlayerData())
     })
-
-    it.skip ("Should not set the time before the media's start")
-    it.skip ("Should not set the time beyond the media's length")
 
     it ('Should do nothing when the user tries to set the time to the current time', async function () {
       /* Set the media time (and ignore the result since we don't need it) */
