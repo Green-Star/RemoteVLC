@@ -12,7 +12,24 @@
     "build-server": "tsc",
     "build-client": "cd client; npm run build;",
     "start": "node dist/server/server.js",
-    "test": "NODE_ENV='test' mocha -r ts-node/register --bail ./server/test/index.ts"
+    "test": "NODE_ENV='test' mocha -r ts-node/register --bail ./server/test/index.ts",
+    "code-coverage": "NODE_ENV='test' nyc mocha -r ts-node/register -r source-map-support/register --bail ./server/test/index.ts"
+  },
+  "nyc": {
+    "include": [
+      "server/**/*.ts"
+    ],
+    "exclude": [
+      "server/test/*"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "sourceMap": true,
+    "instrument": true
   },
   "dependencies": {
     "express": "^4.16.3",
@@ -32,7 +49,9 @@
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
     "mocha-typescript": "^1.1.17",
+    "nyc": "^13.1.0",
     "sinon": "^7.0.0",
+    "source-map-support": "^0.5.10",
     "supertest": "^3.1.0",
     "ts-node": "^7.0.1",
     "typescript": "~2.7.2"
