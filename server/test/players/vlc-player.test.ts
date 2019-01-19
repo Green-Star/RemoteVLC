@@ -628,7 +628,7 @@ describe('VLC player tests', () => {
         expect(result).to.deep.equal(expectedContext.toFormattedPlayerData())
       })
 
-      it.skip ('Should do nothing if the selected video track does not exist', async function () {
+      it ('Should do nothing if the selected video track does not exist', async function () {
         /* This promise should be fulfilled immediately */
         let result = await vlcPlayer.setVideoTrack(-5)
 
@@ -789,7 +789,7 @@ describe('VLC player tests', () => {
         expect(result).to.deep.equal(expectedContext.toFormattedPlayerData())
       })
 
-      it.skip ('Should do nothing if the selected audio track does not exist', async function () {
+      it ('Should do nothing if the selected audio track does not exist', async function () {
         /* This promise should be fulfilled immediately */
         let result = await vlcPlayer.setAudioTrack(-5)
 
@@ -950,7 +950,7 @@ describe('VLC player tests', () => {
         expect(result).to.deep.equal(expectedContext.toFormattedPlayerData())
       })
 
-      it.skip ('Should do nothing if the selected subtitle track does not exist', async function () {
+      it ('Should do nothing if the selected subtitle track does not exist', async function () {
         /* This promise should be fulfilled immediately */
         let result = await vlcPlayer.setSubtitleTrack(-5)
 

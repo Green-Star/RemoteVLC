@@ -208,8 +208,9 @@ export class VLCPlayer extends Player {
   }
 
   public setVideoTrack (trackId: number): Promise<PlayerData> {
+    /* If the new selected track does not exist, immediately return an already fulfilled promise */
     let updated = this.context.setSelectedVideoTrack(trackId)
-    if (updated === false) return
+    if (updated === false) return Utils.resolvedPromise(this.context.toFormattedPlayerData())
 
     let task = new Task(METHODS.SET_VIDEO_TRACK)
 
@@ -229,8 +230,9 @@ export class VLCPlayer extends Player {
   }
 
   public setAudioTrack (trackId: number): Promise<PlayerData> {
+    /* If the new selected track does not exist, immediately return an already fulfilled promise */
     let updated = this.context.setSelectedAudioTrack(trackId)
-    if (updated === false) return
+    if (updated === false) return Utils.resolvedPromise(this.context.toFormattedPlayerData())
 
     let task = new Task(METHODS.SET_AUDIO_TRACK)
 
@@ -250,8 +252,9 @@ export class VLCPlayer extends Player {
   }
 
   public setSubtitleTrack (trackId: number): Promise<PlayerData> {
+    /* If the new selected track does not exist, immediately return an already fulfilled promise */
     let updated = this.context.setSelectedSubtitleTrack(trackId)
-    if (updated === false) return
+    if (updated === false) return Utils.resolvedPromise(this.context.toFormattedPlayerData())
 
     let task = new Task(METHODS.SET_SUBTITLE_TRACK)
 
