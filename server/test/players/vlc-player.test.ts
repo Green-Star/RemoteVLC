@@ -407,6 +407,30 @@ describe('VLC player tests', () => {
       expectedContext.setSubtitleTracks(subtitleTrack)
       expect(result).to.deep.equal(expectedContext.toFormattedPlayerData())
     })
+
+    it ('Should get the title with partial reads', async function () {
+      let promise = vlcPlayer.getTitle()
+      fakeProcess.stdout.push("My awesome ")
+      await delay(500)
+      fakeProcess.stdout.push("movie")
+      await delay(500)
+      fakeProcess.stdout.push("\r\n> ")
+
+      let result = await promise
+      expectedContext.setTitle("My awesome movie")
+      expect(result).to.deep.equal(expectedContext.toFormattedPlayerData())
+    })
+
+    it ('Should decrease the volume, with partial reads', async function () {
+      let promise = vlcPlayer.volumeDown()
+      fakeProcess.stdout.push("( audio volume: ")
+      await delay(500)
+      fakeProcess.stdout.push("20 )\r\n> ")
+
+      let result = await promise
+      expectedContext.setVolume(20)
+      expect(result).to.deep.equal(expectedContext.toFormattedPlayerData())
+    })
   })
 
   describe('Track tests', () => {
