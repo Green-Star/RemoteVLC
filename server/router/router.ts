@@ -49,111 +49,144 @@ export class Router {
     return res.send('pong').status(200).end()
   }
 
-  private getMediaInformations (req: express.Request, res: express.Response, next: express.NextFunction) {
+  private async getMediaInformations (req: express.Request, res: express.Response, next: express.NextFunction) {
     /* player.getMediaInformations returns an array filled with the results of all the promises created */
     /* In this case, we need to return only one result of this array (say array[0]) */
-    this.player
-      .getMediaInformations()
-      .then(context => res.json(context[0]))
-      .catch(err => next(err))
+    try {
+
+      let result = await this.player.getMediaInformations()
+      res.json(result[0])
+
+    } catch (error) {
+      next(error)
+    }
   }
 
-  private play (req: express.Request, res: express.Response, next: express.NextFunction) {
-    this.player
-      .play()
-      .then(context => res.json(context))
-      .catch(err => next(err))
+  private async play (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+
+      res.json(await this.player.play())
+
+    } catch (error) {
+      next(error)
+    }
   }
 
-  private pause (req: express.Request, res: express.Response, next: express.NextFunction) {
-    this.player
-      .pause()
-      .then(context => res.json(context))
-      .catch(err => next(err))
+  private async pause (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+
+      res.json(await this.player.pause())
+
+    } catch (error) {
+      next(error)
+    }
   }
 
-  private getVolume (req: express.Request, res: express.Response, next: express.NextFunction) {
-    this.player
-      .getVolume()
-      .then(context => res.json(context))
-      .catch(err => next(err))
+  private async getVolume (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+
+      res.json(await this.player.getVolume())
+
+    } catch (error) {
+      next(error)
+    }
   }
 
-  private setVolume (req: express.Request, res: express.Response, next: express.NextFunction) {
-    let volume: number = +req.params.volume
+  private async setVolume (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
 
-    this.player
-      .setVolume(volume)
-      .then(context => res.json(context))
-      .catch(err => next(err))
+      let volume: number = +req.params.volume
+      res.json(await this.player.setVolume(volume))
+
+    } catch (error) {
+      next(error)
+    }
   }
 
-  private volumeUp (req: express.Request, res: express.Response, next: express.NextFunction) {
-    this.player
-      .volumeUp()
-      .then(context => res.json(context))
-      .catch(err => next(err))
+  private async volumeUp (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+
+      res.json(await this.player.volumeUp())
+
+    } catch (error) {
+      next(error)
+    }
   }
 
-  private volumeDown (req: express.Request, res: express.Response, next: express.NextFunction) {
-    this.player
-      .volumeDown()
-      .then(context => res.json(context))
-      .catch(err => next(err))
+  private async volumeDown (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+
+      res.json(await this.player.volumeDown())
+
+    } catch (error) {
+      next(error)
+    }
   }
 
-  private setTime (req: express.Request, res: express.Response, next: express.NextFunction) {
-    let time: number = +req.params.time
+  private async setTime (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
 
-    this.player
-      .setTime(time)
-      .then(context => res.json(context))
-      .catch(err => next(err))
+      let time: number = +req.params.time
+      res.json(await this.player.setTime(time))
+
+    } catch (error) {
+      next(error)
+    }
   }
 
-  private getTime (req: express.Request, res: express.Response, next: express.NextFunction) {
-    this.player
-      .getTime()
-      .then(context => res.json(context))
-      .catch(err => next(err))
-  }
+  private async getTime (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
 
-  private addTime (req: express.Request, res: express.Response, next: express.NextFunction) {
-    let seconds: number = +req.params.seconds
-
-    this.player
-      .addTime(seconds)
-      .then(context => res.json(context))
-      .catch(err => next(err))
-  }
-
-  private setVideoTrack (req: express.Request, res: express.Response, next: express.NextFunction) {
-    let id: number = +req.params.id
+      res.json(await this.player.getTime())
     
-    this.player
-      .setVideoTrack(id)
-      .then(context => res.json(context))
-      .catch(err => next(err))
+    } catch (error) {
+      next(error)
+    }
   }
 
-  private setAudioTrack (req: express.Request, res: express.Response, next: express.NextFunction) {
-    let id: number = +req.params.id
+  private async addTime (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+
+      let seconds: number = +req.params.seconds
+      res.json(await this.player.addTime(seconds))
+
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  private async setVideoTrack (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
+
+      let id: number = +req.params.id
+      res.json(await this.player.setVideoTrack(id))
+
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  private async setAudioTrack (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
     
-    this.player
-      .setAudioTrack(id)
-      .then(context => res.json(context))
-      .catch(err => next(err))
+      let id: number = +req.params.id
+      res.json(await this.player.setAudioTrack(id))
+
+    } catch (error) {
+      next(error)
+    }
   }
 
-  private setSubtitleTrack (req: express.Request, res: express.Response, next: express.NextFunction) {
-    let id: number = +req.params.id
-    
-    this.player
-      .setSubtitleTrack(id)
-      .then(context => res.json(context))
-      .catch(err => next(err))
-  }
+  private async setSubtitleTrack (req: express.Request, res: express.Response, next: express.NextFunction) {
+    try {
 
+      let id: number = +req.params.id
+      res.json(await this.player.setSubtitleTrack(id))
+
+    } catch (error) {
+      next(error)
+    }
+  }
 
   private todo (req: express.Request, res: express.Response, next: express.NextFunction) {
     logger.debug('Not yet implemented')
