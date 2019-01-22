@@ -20,10 +20,10 @@ if (process.env.NODE_ENV === 'test') {
     new winston.transports.Console({
       level: 'debug',
       handleExceptions: true,
-      humanReadableUnhandledException: true,
-      json: false,
-      colorize: true,
-      prettyPrint: true
+      format: winston.format.combine(
+          winston.format.colorize(),
+          winston.format.simple()
+        )
     }))
 
   /* Log to file as well (if a file to read has been provided on the cli) */
@@ -35,21 +35,25 @@ if (process.env.NODE_ENV === 'test') {
         level: 'debug',
         filename: path.join(logsDirectory, filename + '.log'),
         handleExceptions: true,
-        json: true,
         maxsize: 5242880,
         maxFiles: 1,
-        colorize: false,
-        prettyPrint: true
+        format: winston.format.combine(
+          winston.format.colorize(),
+          winston.format.printf(info => `{"level":${info.level},"message":${JSON.stringify(info.message)}}`)
+        )
       }))
   }
 }
 
-let internalLogger = new winston.Logger({
+
+let internalLogger = winston.createLogger({
   transports: transports,
   exitOnError: true
 })
 
+
 let logger = {
+
   internalLogger: internalLogger,
 
   /* Used for morgan logs */
