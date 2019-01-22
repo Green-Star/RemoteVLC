@@ -6,7 +6,7 @@
         "noImplicitAny": false,
         "moduleResolution": "node",
         "sourceMap": true,
-        "outDir": "dist",
+        "outDir": "../dist/server",
         "baseUrl": ".",
         "paths": {
             "*": [
@@ -14,10 +14,13 @@
             ]
         }
     },
+    "references": [
+        { "path": "../shared" }
+    ],
     "include": [
-        "./server/**/*"
+        "./**/*"
     ],
     "exclude": [
-        "./server/test/*"
+        "./test/*"
     ]
 }
