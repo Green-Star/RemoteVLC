@@ -8,6 +8,10 @@
     "node": ">=10.x"
   },
   "scripts": {
+    "install-remote": "npm run install-all && npm run build-all",
+    "install-all": "npm run install-server && npm run install-client",
+    "install-server": "npm install",
+    "install-client": "cd client; npm install;",
     "build-all": "npm run build-server && npm run build-client",
     "build-server": "tsc --build server",
     "build-client": "cd client; npm run build;",
@@ -27,7 +31,9 @@
     ],
     "sourceMap": true,
     "instrument": true,
-    "lib": [ "es2015" ]
+    "lib": [
+      "es2015"
+    ]
   },
   "dependencies": {
     "express": "^4.16.3",
