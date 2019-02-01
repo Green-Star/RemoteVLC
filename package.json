@@ -12,8 +12,8 @@
     "build-server": "tsc --build server",
     "build-client": "cd client; npm run build;",
     "start": "node dist/server/server.js",
-    "test": "NODE_ENV='test' mocha --require ./server/test/register.js --bail ./server/test/index.ts",
-    "code-coverage": "NODE_ENV='test' nyc mocha --require ./server/test/register.js -r source-map-support/register --bail ./server/test/index.ts"
+    "test": "NODE_ENV='test' mocha --require ./server/test/ts-node.ts --bail ./server/test/index.ts",
+    "code-coverage": "NODE_ENV='test' nyc mocha --require ./server/test/ts-node.ts -r source-map-support/register --bail ./server/test/index.ts"
   },
   "nyc": {
     "include": [
@@ -25,11 +25,9 @@
     "extension": [
       ".ts"
     ],
-    "require": [
-      "ts-node/register"
-    ],
     "sourceMap": true,
-    "instrument": true
+    "instrument": true,
+    "lib": [ "es2015" ]
   },
   "dependencies": {
     "express": "^4.16.3",
