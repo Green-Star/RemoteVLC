@@ -8,7 +8,6 @@ const ScriptExtPlugin = require('script-ext-html-webpack-plugin')
 const { AngularCompilerPlugin } = require('@ngtools/webpack')
 
 const rootDir = path.join(path.dirname(__dirname))
-console.log(rootDir)
 
 module.exports = {
 	entry: {
