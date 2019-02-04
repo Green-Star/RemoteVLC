@@ -73,32 +73,41 @@ module.exports = {
 	]
 }
 
-function forceReload(webpackWatching, resourceToReload, resourceType) {
-	let reload = true
-	let changedFiles = Object.keys(webpackWatching.inputFileSystem._webpackCompilerHost._changedFiles)
-	
-	let changedResource = changedFiles.find(file => file === resourceToReload)
+/***
+
+	Force reload a resource, depending on the modified resources in the webpack watch.
+
+	If a resourceType has been provided, the resourceToReload will be force reloaded only
+	if a resource matching the resourceType type has been modified
+
+	Otherwise, the resourceToReload will always be force reloaded
+
+	If the resourceToReload is already modified, this function does nothing (to avoid infinite build)
+
+	The resourceToReload is force reloaded by executing a `touch resourceToReload`
+
+***/
+function forceReload (webpackWatching, resourceToReload, resourceType) {
+	let changedFilesSet = webpackWatching.inputFileSystem._webpackCompilerHost._changedFiles
+
+	let resourceModified = changedFilesSet.has(resourceToReload)
 
 	/* If the resource to reload has already been modified, there's no need to reload it */
-	if (changedResource !== undefined) {
-		reload = false
-	} else {
-		/* The resource has not been modified, let's see if we need to reload it ... */
+	if (resourceModified === true) return
 
-		/* If it depends of a particular type file, we need to check if a file of this type has been modified */ 
-		if (resourceType) {
-			let changedResourceType = changedFiles.find(pathToResource => path.parse(pathToResource).ext === resourceType)
+	/* The resource has not been modified, let's see if we need to reload it ... */
 
-			/* No resourceType files has been modified, no need to force reload the resource */
-			if (changedResourceType === undefined) {
-				reload = false
-			}
-		}
-		/* No particular resourceType file have been provided => always reload the resource */
+	/* If it depends of a particular type file, we need to check if a file of this type has been modified */
+	if (resourceType) {
+		let modifiedResourceType = [...changedFilesSet].find(pathToResource => path.parse(pathToResource).ext === resourceType)
+
+		/* No resourceType files has been modified, no need to force reload the resource */
+		if (modifiedResourceType === undefined) return
+
+		/* A resourceType file has been modified, we need to force reload the resource */
 	}
+	/* No particular resourceType file have been provided => always reload the resource */
 
-	if (reload === true) {
-		console.log(`Force reloading ${resourceToReload}`)
-		exec(`touch ${resourceToReload}`)
-	}
+	console.log(`Force reloading ${resourceToReload}`)
+	exec(`touch ${resourceToReload}`)
 }
