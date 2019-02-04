@@ -10,7 +10,7 @@ import { Router } from './router'
 
 if (!process.argv[2]) {
   logger.error('Missing media filename to play')
-  logger.info('Usage: ' + process.argv[0] + " " + process.argv[1] + " <media filename>")
+  logger.info('Usage: ' + process.argv[0] + ' ' + process.argv[1] + ' <media filename>')
   process.exit(1)
 }
 
@@ -19,10 +19,7 @@ logger.info('Starting Remote control for ' + process.argv[2])
 /*** Start player control ***/
 logger.info('Spawning player ...')
 
-// Use a mock player when building WebUI
-let player = PlayerFactory.getPlayer('mock-player', process.argv[2])
-
-// let player = PlayerFactory.getPlayer('vlc', process.argv[2])
+let player = PlayerFactory.getPlayer('vlc', process.argv[2])
 player.start()
 
 /*** Start WebUI control ***/

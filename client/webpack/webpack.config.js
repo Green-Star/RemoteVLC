@@ -3,14 +3,13 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const ScriptExtPlugin = require('script-ext-html-webpack-plugin')
 const { AngularCompilerPlugin } = require('@ngtools/webpack')
 
-const rootDir = path.join(__dirname)
+const rootDir = path.join(path.dirname(__dirname))
 
 module.exports = {
-	mode: 'development',
-	devtool: 'source-map',
 	entry: {
 		main: path.join(rootDir, 'src', 'main.ts')
 	},
@@ -30,6 +29,7 @@ module.exports = {
 		]
 	},
 	plugins	: [
+
 		new CopyWebpackPlugin([
 			{ from: path.join(rootDir, 'src', 'assets'), to: 'assets' },
 			{ from: './src/**/*.css', to: 'assets/styles', flatten: true }
@@ -50,6 +50,13 @@ module.exports = {
 			entryModule: path.join(rootDir, 'src', 'app', 'app.module#AppModule'),
 			sourceMap: true,
 			skipCodeGeneration: false
-		})
+		}),
+
+		new CleanWebpackPlugin([
+				path.join(rootDir, 'dist')
+			], 
+			{ root: rootDir }
+		),
+
 	]
 }
