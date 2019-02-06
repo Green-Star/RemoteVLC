@@ -7,7 +7,12 @@ let transports = []
 /* Use a mock logger when testing ... */
 if (process.env.NODE_ENV === 'test') {
 
-  /* When testing, we will log nothing ... */
+  /* When testing, we will only log errors (which should never occured) ... */
+  transports.push(
+    new winston.transports.Console({
+      level: 'error',
+      handleExceptions: true
+    }))
 
 /* And a real one for the prod environment */
 } else {
