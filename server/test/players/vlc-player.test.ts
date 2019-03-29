@@ -2,7 +2,6 @@ import 'mocha'
 import { expect } from 'chai'
 import * as sinon from 'sinon'
 import { Duplex } from 'stream'
-import * as child_process from 'child_process'
 
 import { Context, Player, VLCPlayer } from '../../player'
 
@@ -40,8 +39,6 @@ describe('VLC player tests', () => {
       this.timeout(5000)
 
       let fake = sinon.fake.returns(fakeProcess)
-
-      sinon.replace(child_process, 'spawn', fake)
 
       expectedContext = new Context()
 
