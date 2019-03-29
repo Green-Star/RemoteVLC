@@ -36,7 +36,7 @@ describe('VLC player tests', () => {
 
   describe('Player tests', () => {
 
-    it('Should test the VLC player', async function () {
+    it('Should start the VLC player', async function () {
       this.timeout(5000)
 
       let fake = sinon.fake.returns(fakeProcess)
