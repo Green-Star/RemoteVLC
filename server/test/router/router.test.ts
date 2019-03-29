@@ -98,7 +98,7 @@ describe('Router tests', () => {
 
   it('Should go 2 minutes later', async function () {
     /* We're making 2 +60 seconds requests instead of one +120
-     * because we're not supposed to add more than 60 seconds in one requests in the front-end
+     * because we're not supposed to add more than 60 seconds in one request in the front-end
      */
     await putRequest(app, '/api/time/add', 60)
     const res = await putRequest(app, '/api/time/add', 60)
