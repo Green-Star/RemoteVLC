@@ -8,12 +8,16 @@
     "node": ">=10.x"
   },
   "scripts": {
+    "install-remote": "npm run install-all && npm run build-all",
+    "install-all": "npm run install-server && npm run install-client",
+    "install-server": "npm install",
+    "install-client": "cd client; npm install;",
     "build-all": "npm run build-server && npm run build-client",
-    "build-server": "tsc",
+    "build-server": "tsc --build server",
     "build-client": "cd client; npm run build;",
     "start": "node dist/server/server.js",
-    "test": "NODE_ENV='test' mocha -r ts-node/register --bail ./server/test/index.ts",
-    "code-coverage": "NODE_ENV='test' nyc mocha -r ts-node/register -r source-map-support/register --bail ./server/test/index.ts"
+    "test": "NODE_ENV='test' mocha --require ./server/test/ts-node.ts --bail ./server/test/index.ts",
+    "code-coverage": "NODE_ENV='test' nyc mocha --require ./server/test/ts-node.ts -r source-map-support/register --bail ./server/test/index.ts"
   },
   "nyc": {
     "include": [
@@ -25,18 +29,18 @@
     "extension": [
       ".ts"
     ],
-    "require": [
-      "ts-node/register"
-    ],
     "sourceMap": true,
-    "instrument": true
+    "instrument": true,
+    "lib": [
+      "es2015"
+    ]
   },
   "dependencies": {
     "express": "^4.16.3",
-    "method-override": "^2.3.10",
+    "method-override": "^3.0.0",
     "mkdirp": "^0.5.1",
-    "morgan": "^1.9.0",
-    "winston": "^2.4.2"
+    "morgan": "^1.9.1",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.4",
@@ -45,15 +49,14 @@
     "@types/mkdirp": "^0.5.2",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.0.8",
-    "@types/winston": "^2.3.9",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
     "mocha-typescript": "^1.1.17",
-    "nyc": "^13.1.0",
+    "nyc": "^13.3.0",
     "sinon": "^7.0.0",
     "source-map-support": "^0.5.10",
     "supertest": "^3.1.0",
-    "ts-node": "^7.0.1",
-    "typescript": "~2.7.2"
+    "ts-node": "^8.0.2",
+    "typescript": "~3.2.4"
   }
 }

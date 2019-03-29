@@ -1,7 +1,5 @@
 {
-  "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dev-tools/dist",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -16,6 +14,9 @@
       "dom"
     ]
   },
+  "references": [
+      { "path": "../shared" }
+  ],
   "files": [
     "src/main.ts"
   ]
