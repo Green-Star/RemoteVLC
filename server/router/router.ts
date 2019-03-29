@@ -157,7 +157,7 @@ export class Router {
 
   private todo (req: express.Request, res: express.Response, next: express.NextFunction) {
     logger.debug('Not yet implemented')
-    return res.send('Not yet implemented').status(200).end()
+    return res.send('Not yet implemented').status(501).end()
   }
 
 }
