@@ -52,11 +52,7 @@ module.exports = {
 			skipCodeGeneration: false
 		}),
 
-		new CleanWebpackPlugin([
-				path.join(rootDir, 'dist')
-			], 
-			{ root: rootDir }
-		),
+		new CleanWebpackPlugin(),
 
 	]
 }
