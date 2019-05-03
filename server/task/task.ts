@@ -21,13 +21,16 @@ export class Task implements Promise<any> {
   }
 
   public then<TResult1 = any, TResult2 = never> (onfulfilled?, onrejected?): Promise<TResult1 | TResult2> {
-      return this.promise.then(onfulfilled, onrejected)
-    }
+    return this.promise.then(onfulfilled, onrejected)
+  }
 
   public catch<TResult = never> (onrejected?): Promise<any | TResult> {
-      return this.promise.then(onrejected)
-    }
+    return this.promise.then(onrejected)
+  }
 
+  public finally<T> (onfinally?: (() => void) | undefined | null): Promise<T> {
+    return this.promise.finally(onfinally)
+  }
 
   public resolve (val: any) { 
     this.internalResolve(val) 
