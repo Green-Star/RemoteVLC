@@ -17,6 +17,7 @@ module.exports = {
 	entry: [
 		'webpack-hot-middleware/client?reload=true',
 		path.join(rootDir, 'src', 'main.ts'),
+		path.join(rootDir, 'src', 'styles.css')
 	],
 	output: {
 		path: path.join(rootDir, 'dist'),
@@ -38,7 +39,6 @@ module.exports = {
 				]
 			},
 			{ test: /\.html$/, use: 'html-loader' }
-
 		]
 	},
 	plugins	: [
@@ -51,7 +51,6 @@ module.exports = {
 	      apply: (compiler) => {
 	        compiler.hooks.watchRun.tap('ForceReloadPlugin', (watching, done) => {
 				forceReload(watching, HTMLIndexFile, '.html')
-				forceReload(watching, HTMLIndexFile, '.css')
 	        });
 	      }
 	    },
