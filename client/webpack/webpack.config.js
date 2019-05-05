@@ -24,8 +24,16 @@ module.exports = {
 	module: {
 		rules: [
 			{ test: /\.ts$/, use: '@ngtools/webpack', exclude: /node_modules/ },
-			{ test: /\.css$/, use: 'raw-loader' },
-			{ test: /\.html$/, use: 'raw-loader' }
+			{
+				test: /\.css$/,
+				exclude: /node_modules/,
+				use: [
+    				'css-to-string-loader',
+    				{ loader: 'css-loader', options: { sourceMap: true } }
+    			]
+			},
+			{ test: /\.html$/, use: 'html-loader' }
+
 		]
 	},
 	plugins	: [
@@ -52,11 +60,7 @@ module.exports = {
 			skipCodeGeneration: false
 		}),
 
-		new CleanWebpackPlugin([
-				path.join(rootDir, 'dist')
-			], 
-			{ root: rootDir }
-		),
+		new CleanWebpackPlugin(),
 
 	]
 }

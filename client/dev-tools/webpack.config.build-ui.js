@@ -17,6 +17,7 @@ module.exports = {
 	entry: [
 		'webpack-hot-middleware/client?reload=true',
 		path.join(rootDir, 'src', 'main.ts'),
+		path.join(rootDir, 'src', 'styles.css')
 	],
 	output: {
 		path: path.join(rootDir, 'dist'),
@@ -29,8 +30,15 @@ module.exports = {
 	module: {
 		rules: [
 			{ test: /\.ts$/, use: '@ngtools/webpack', exclude: /node_modules/ },
-			{ test: /\.css$/, use: 'raw-loader' },
-			{ test: /\.html$/, use: 'raw-loader' }
+			{
+				test: /\.css$/,
+				exclude: /node_modules/,
+				use: [
+					'css-to-string-loader',
+					{ loader: 'css-loader', options: { sourceMap: true } }
+				]
+			},
+			{ test: /\.html$/, use: 'html-loader' }
 		]
 	},
 	plugins	: [
@@ -42,7 +50,7 @@ module.exports = {
 	    {
 	      apply: (compiler) => {
 	        compiler.hooks.watchRun.tap('ForceReloadPlugin', (watching, done) => {
-	        	forceReload(watching, HTMLIndexFile, '.html') 
+				forceReload(watching, HTMLIndexFile, '.html')
 	        });
 	      }
 	    },
@@ -72,6 +80,7 @@ module.exports = {
 
 	]
 }
+
 
 /***
 
