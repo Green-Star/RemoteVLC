@@ -21,7 +21,7 @@ export class TimerComponent implements OnInit {
 
   constructor(
       public dialog: MatDialog
-    ) {}
+  ) {}
 
   ngOnInit() {
     if (this.isPlaying === true) {
