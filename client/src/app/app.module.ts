@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
 import { MatDialogModule } from '@angular/material'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { PlayerService } from './service'
 
 import { DisplaySecondsPipe, DisplayTrackPipe } from './pipes'
@@ -27,7 +28,11 @@ import { TimeDialogComponent } from './time-dialog/time-dialog.component'
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    MatDialogModule
+    MatDialogModule,
+    BrowserAnimationsModule
+  ],
+  entryComponents: [
+    TimeDialogComponent
   ],
   providers: [
     PlayerService
