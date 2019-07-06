@@ -70,6 +70,10 @@ export class TimeDialogComponent implements OnInit {
     return this.maxSeconds > 0
   }
 
+  autoselect(event): void {
+    event.target.select()
+  }
+
   close(): void {
     let result
 
