@@ -7,11 +7,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { PlayerService } from './service'
 
 import { DisplaySecondsPipe, DisplayTrackPipe } from './pipes'
+import { AutoselectDirective } from './directives'
 
 import { AppComponent } from './app.component'
 import { PlayerComponent } from './player/player.component'
-import { TimerComponent } from './timer/timer.component';
-import { TrackComponent } from './track/track.component';
+import { TimerComponent } from './timer/timer.component'
+import { TrackComponent } from './track/track.component'
 import { TimeDialogComponent } from './time-dialog/time-dialog.component'
 
 @NgModule({
@@ -22,7 +23,8 @@ import { TimeDialogComponent } from './time-dialog/time-dialog.component'
     DisplayTrackPipe,
     TimerComponent,
     TrackComponent,
-    TimeDialogComponent
+    TimeDialogComponent,
+    AutoselectDirective
   ],
   imports: [
     BrowserModule,
