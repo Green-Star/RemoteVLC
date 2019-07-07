@@ -1,9 +1,9 @@
 import { Directive, ElementRef, HostListener } from '@angular/core';
 
 @Directive({
-  selector: '[appAutoselect]'
+  selector: '[appAutoSelect]'
 })
-export class AutoselectDirective {
+export class AutoSelectDirective {
 
   constructor(
     private el: ElementRef

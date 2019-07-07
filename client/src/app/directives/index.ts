@@ -1,1 +1,1 @@
-export * from './autoselect.directive'
+export * from './auto-select.directive'
