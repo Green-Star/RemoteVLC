@@ -62,7 +62,7 @@ export class VLCPlayer extends Player {
     this.data = data
   }
 
-  public start (): void {
+  public async start (): Promise<void> {
     /* Spawn VLC process */
     this.vlcProcess = this.spawnService('vlc',
               [ this.filename, '--fullscreen', '--play-and-exit', '-I rc' ])
@@ -78,12 +78,12 @@ export class VLCPlayer extends Player {
 
     this.tasks.push(task)
 
-    /* Once INIT has finish, we'll wait a bit (500ms) to let VLC initialize its stuff, 
-      and then we send 'pause' and get the media informations
-    */
-    task.then(() => Utils.delay(500))
-        .then(() => this.pause())
-        .then(() => this.getMediaInformations())
+    /* Once INIT has finish, we let VLC initialize its stuff, and then we send 'pause' and get the media informations */
+    await task
+    await this.initializeVLC()
+    await this.pause()
+    await this.getMediaInformations()
+    return
   }
 
   public getMediaInformations (): Promise<PlayerData[]> {
@@ -352,6 +352,21 @@ export class VLCPlayer extends Player {
     }
 
     return { returnedResult: result, remainingData: remainingData, tracks: parsedTracks }
+  }
+
+  private async initializeVLC (): Promise<void> {
+    do {
+      let result = await this.getTitle()
+
+      if (result && result.title) {
+        logger.info('VLC initialized')
+        break
+      }
+
+      await Utils.delay(100)
+    } while (true)
+
+    return
   }
 
   private setInternalMethods (): void {
