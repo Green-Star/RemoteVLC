@@ -52,6 +52,10 @@ describe('VLC player tests', () => {
       fakeProcess.stdout.push("Command Line Interface initialized. Type `help' for help.\r\n")
       await delay(1000)
 
+      /* VLC initialization */
+      expectedContext.setTitle('My awesome movie')
+      fakeProcess.stdout.push(`${expectedContext.getTitle()}\r\n`)
+
       /* Pause mode */
       expectedContext.setPlaying(true)
       expectedContext.stopPlaying()
@@ -59,7 +63,6 @@ describe('VLC player tests', () => {
       await delay(1000)
 
       /* Title */
-      expectedContext.setTitle('My awesome movie')
       fakeProcess.stdout.push(`${expectedContext.getTitle()}\r\n`)
       /* Length */
       expectedContext.setLength(42)
