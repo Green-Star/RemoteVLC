@@ -20,12 +20,15 @@ export class Task implements Promise<any> {
     this.name = name
   }
 
-  public then<TResult1 = any, TResult2 = never> (onfulfilled?, onrejected?): Promise<TResult1 | TResult2> {
+  public then<TResult1 = any, TResult2 = never>
+          (onfulfilled?: ((value: any) => TResult1 | PromiseLike<TResult1>) | undefined | null,
+           onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null
+          ) : Promise<TResult1 | TResult2> {
     return this.promise.then(onfulfilled, onrejected)
   }
 
-  public catch<TResult = never> (onrejected?): Promise<any | TResult> {
-    return this.promise.then(onrejected)
+  public catch<TResult = never> (onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<any | TResult> {
+    return this.promise.catch(onrejected)
   }
 
   public finally<T> (onfinally?: (() => void) | undefined | null): Promise<T> {
