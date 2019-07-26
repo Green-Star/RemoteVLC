@@ -8,7 +8,7 @@ export abstract class Player implements PlayerMethods {
     this.filename = filename
   }
 
-  abstract start (): void;
+  abstract start (): Promise<void | PlayerData>;
   abstract getMediaInformations (): Promise<PlayerData[]>;
   abstract pause (): Promise<PlayerData>;
   abstract play (): Promise<PlayerData>;

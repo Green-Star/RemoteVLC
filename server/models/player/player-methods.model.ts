@@ -1,7 +1,7 @@
 import { PlayerData } from '../../../shared'
 
 export interface PlayerMethods {
-  start: () => void;
+  start: () => Promise<void | PlayerData>;
   getMediaInformations: () => Promise<PlayerData[]>;
   pause: () => Promise<PlayerData>;
   play: () => Promise<PlayerData>;
