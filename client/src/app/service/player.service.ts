@@ -14,7 +14,8 @@ export class PlayerService {
   volumeRoute: string = `${this.apiRoute}/volume`
 
   constructor(
-    private http: HttpClient) { }
+    private http: HttpClient
+  ) {}
 
   init(): Observable<PlayerData> {
   	return this.refresh()

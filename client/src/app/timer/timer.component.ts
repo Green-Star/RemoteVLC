@@ -1,4 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
+import { MatDialog } from '@angular/material'
+
+import { PlayerService } from '../service'
+
+import { TimeDialogComponent } from '../time-dialog/time-dialog.component'
 
 @Component({
   selector: 'app-timer',
@@ -12,7 +17,11 @@ export class TimerComponent implements OnInit {
 
   timer: number
 
-  constructor() {}
+  @Output() setTimeFromDialogEvent: EventEmitter<number> = new EventEmitter()
+
+  constructor(
+      public dialog: MatDialog
+  ) {}
 
   ngOnInit() {
     if (this.isPlaying === true) {
@@ -38,5 +47,13 @@ export class TimerComponent implements OnInit {
 
   stopTimer() {
     clearInterval(this.timer)
+  }
+
+  openTimeDialog() {
+    let timeDialog = this.dialog.open(TimeDialogComponent, { maxWidth: '100vw', position: { left: '0px' }, data: this.length })
+    timeDialog.afterClosed().subscribe(result => {
+      if (result === undefined) return
+      this.setTimeFromDialogEvent.emit(result)
+    })
   }
 }

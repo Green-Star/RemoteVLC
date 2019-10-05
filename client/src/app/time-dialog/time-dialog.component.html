@@ -1,0 +1,23 @@
+<div class="component-container bordered" [class.visually-hidden-border]="isValidTime()" [class.error-bordered]="isInvalidTime()">
+	<legend class="error-legend" [class.hidden]="isValidTime()">Invalid time</legend>
+	<span class="data-container">
+		<span *ngIf="displayHours()" class="margin-content">
+			<input type="number" [(ngModel)]="selectedHours" min="0" [max]="maxHours" name="hour" appAutoSelect>
+		</span>
+		<span *ngIf="displayHours()" class="margin-content">:</span>
+		<span *ngIf="displayMinutes()" class="margin-content">
+			<input type="number" [(ngModel)]="selectedMinutes" min="0" [max]="maxMinutes" name="minutes" appAutoSelect>
+		</span>
+		<span *ngIf="displayMinutes()" class="margin-content">:</span>
+		<span *ngIf="displaySeconds()" class="margin-content">
+			<input type="number" [(ngModel)]="selectedSeconds" min="0" [max]="maxSeconds" name="seconds" appAutoSelect>
+		</span>
+	</span>
+	<span class="data-container">
+		<p>Max: {{ this.data | displaySeconds }}</p>
+	</span>
+	<span class="data-container">
+		<button type="submit" (click)="cancel()">Cancel</button>
+		<button type="submit" (click)="close()" [disabled]="isInvalidTime()">Go</button>
+	</span>
+</div>

@@ -17,7 +17,9 @@ export class PlayerComponent implements OnInit {
   @ViewChild('audio') audioTrackComponent: TrackComponent
   @ViewChild('subtitle') subtitleTrackComponent: TrackComponent
 
-  constructor(private playerService : PlayerService) {}
+  constructor(
+    private playerService : PlayerService
+  ) {}
 
   ngOnInit() {
     this.player = undefined

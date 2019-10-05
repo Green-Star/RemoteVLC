@@ -1,33 +1,3 @@
-a, select {
-	color: lightgrey;
-	width: 5rem;
-	height: 2rem;
-	display: flex;
-	flex-direction: inherit;
-	justify-content: inherit;
-	align-items: inherit;
-	text-decoration: none;
-}
-
-@media all and (min-width: 700px) {
-	select {
-		width: 10rem;
-	}
-}
-
-a {
-	border-style: solid;
-}
-
-.bordered {
-	border-style: solid;
-	border-width: 3px;
-	border-color: lightgrey;
-	border-radius: 1rem;
-	margin-bottom: 0.2rem;
-	margin-top: 0.4rem;
-}
-
 legend {
 	margin-top: -0.7rem;
 	margin-left: 1rem;
@@ -37,10 +7,6 @@ legend {
 }
 
 @media all and (max-width: 700px) {
-	a {
-		margin: 0.1rem;
-	}
-
 	#time-controls {
 		flex-wrap: wrap;
 	}
@@ -65,10 +31,6 @@ legend {
 }
 
 @media all and (max-width: 700px) and (orientation: landscape) {
-	select {
-		width: 10rem;
-	}
-
 	.main-container {
 		flex-wrap: wrap;
 		flex-direction: row;

@@ -8,7 +8,8 @@
     <app-timer
       [isPlaying]="player.isPlaying"
       [time]="player.time"
-      [length]="player.length"></app-timer>
+      [length]="player.length"
+      (setTimeFromDialogEvent)="setTime($event)"></app-timer>
 
     <div class="component-container">
         <div class="data-container">

@@ -22,10 +22,41 @@ body {
     height: 100vh;
 }
 
+a, input, select {
+	color: lightgrey;
+	width: 5rem;
+	height: 2rem;
+}
+
+a, select {
+	display: flex;
+	flex-direction: inherit;
+	justify-content: inherit;
+	align-items: inherit;
+	text-decoration: none;
+}
+
+a {
+	border-style: solid;
+}
+
 @media all and (min-width: 700px) {
 	body {
 		width: 50vw;
 	}
+
+	input, select {
+		width: 10rem;
+	}
+}
+
+.bordered {
+	border-style: solid;
+	border-width: 3px;
+	border-color: lightgrey;
+	border-radius: 1rem;
+	margin-bottom: 0.2rem;
+	margin-top: 0.4rem;
 }
 
 .main-container {
@@ -49,4 +80,14 @@ body {
 .data-container strong {
 	font-weight: bold;
 	font-size: 20px;
+}
+
+@media all and (max-width: 700px) {
+	a {
+		margin: 0.1rem;
+	}
+}
+
+.hidden {
+	visibility: hidden;
 }
