@@ -14,7 +14,7 @@ export class MockPlayer extends Player {
     this.context = context
   }
 
-  public start (): void {
+  public start (): Promise<void> {
     let mockData = {
       title: "La grande aventure Lego.mkv",
       isPlaying: false,
@@ -46,6 +46,8 @@ export class MockPlayer extends Player {
     this.context.setVideoTracks(mockData.tracks.video)
     this.context.setAudioTracks(mockData.tracks.audio)
     this.context.setSubtitleTracks(mockData.tracks.subtitle)
+
+    return Utils.resolvedPromise()
   }
 
   public getMediaInformations (): Promise<PlayerData[]> {
